@@ -34,7 +34,8 @@
       color: var(--text-primary);
       background: radial-gradient(circle at top, rgba(255, 255, 255, 0.92) 0%, rgba(237, 232, 223, 0.88) 35%, var(--bg) 100%);
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       display: flex;
       justify-content: center;
       align-items: stretch;
@@ -118,42 +119,26 @@
 
     .intro {
       text-align: center;
-      max-width: 540px;
-      background: rgba(255, 255, 255, 0.55);
-      border-radius: 32px;
-      padding: clamp(18px, 4vw, 32px);
-      border: 1px solid rgba(186, 168, 200, 0.32);
-      box-shadow: 0 18px 48px rgba(110, 98, 132, 0.12);
-      backdrop-filter: blur(14px);
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .intro h1 {
-      margin: 0 0 14px;
+      margin: 0;
       font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: clamp(2.1rem, 5vw, 3.4rem);
+      font-size: clamp(2.1rem, 5vw, 3.2rem);
       line-height: 1.08;
       letter-spacing: 0.05em;
       font-weight: 500;
     }
 
     .intro p {
-      margin: 0 0 1.1rem;
+      margin: 0;
       color: var(--text-secondary);
-      font-size: clamp(1rem, 1.4vw, 1.18rem);
-      line-height: 1.7;
-    }
-
-    .immersive-invite {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0.6rem 1.1rem;
-      border-radius: 999px;
-      background: rgba(189, 176, 205, 0.22);
-      color: var(--text-primary);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-size: 0.75rem;
+      font-size: clamp(1rem, 1.2vw, 1.08rem);
+      line-height: 1.6;
     }
 
     .viewer {
@@ -161,13 +146,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 24px;
     }
 
     .book-frame {
-      position: relative;
       width: 100%;
-      padding: clamp(20px, 3vw, 28px);
+      padding: clamp(18px, 3vw, 26px);
       border-radius: 34px;
       background: linear-gradient(170deg, rgba(255, 255, 255, 0.92), rgba(239, 236, 244, 0.72));
       border: 1px solid rgba(189, 171, 205, 0.32);
@@ -429,82 +413,95 @@
       display: block;
     }
 
-    .page-indicator {
-      position: absolute;
-      bottom: clamp(80px, 12vw, 120px);
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      font-size: 0.85rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(47, 37, 56, 0.58);
-      background: rgba(255, 255, 255, 0.5);
-      padding: 0.5rem 1rem;
-      border-radius: 999px;
-      backdrop-filter: blur(12px);
-    }
-
-    .controls {
-      position: absolute;
-      bottom: clamp(24px, 5vw, 48px);
-      left: 50%;
-      transform: translateX(-50%);
-      display: inline-flex;
-      flex-wrap: wrap;
+    .viewer-toolbar {
+      display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px solid rgba(182, 164, 198, 0.35);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 18px 36px rgba(110, 98, 132, 0.18);
+      gap: 16px;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
     }
 
-    .controls button {
+    .viewer-toolbar__nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(182, 164, 198, 0.28);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 28px rgba(110, 98, 132, 0.16);
+    }
+
+    .viewer-button {
       appearance: none;
       border: none;
-      border-radius: 999px;
-      padding: 0.55rem 0.95rem;
-      background: linear-gradient(135deg, rgba(201, 188, 214, 0.34), rgba(204, 221, 229, 0.38));
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(201, 188, 214, 0.35), rgba(204, 221, 229, 0.4));
       color: var(--text-primary);
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      font-size: 1.35rem;
+      line-height: 1;
       cursor: pointer;
-      transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 8px 18px rgba(120, 110, 143, 0.18);
+      display: grid;
+      place-items: center;
+      transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 18px rgba(120, 110, 143, 0.18);
     }
 
-    .controls button:hover,
-    .controls button:focus-visible {
-      transform: translateY(-1px);
+    .viewer-button:hover,
+    .viewer-button:focus-visible {
       outline: none;
-      background: linear-gradient(135deg, rgba(201, 188, 214, 0.48), rgba(204, 221, 229, 0.48));
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(201, 188, 214, 0.5), rgba(204, 221, 229, 0.52));
     }
 
-    .controls button:active {
+    .viewer-button:active {
       transform: translateY(0);
     }
 
+    .page-indicator {
+      margin: 0;
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(47, 37, 56, 0.64);
+      white-space: nowrap;
+    }
+
     .sound-toggle {
-      position: absolute;
-      top: clamp(18px, 3vw, 28px);
-      right: clamp(18px, 3vw, 28px);
       border: none;
       border-radius: 999px;
       padding: 0.45rem 1.1rem;
-      background: rgba(255, 255, 255, 0.65);
+      background: rgba(255, 255, 255, 0.72);
       color: var(--text-primary);
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       font-size: 0.68rem;
       font-weight: 600;
       cursor: pointer;
       transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 24px rgba(110, 98, 132, 0.18);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 24px rgba(110, 98, 132, 0.16);
+      position: relative;
+      padding-right: 2.4rem;
+    }
+
+    .sound-toggle::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 0.9rem;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(47, 37, 56, 0.32);
+      transition: background 160ms ease;
     }
 
     .sound-toggle:hover,
@@ -514,26 +511,13 @@
       outline: none;
     }
 
-    .sound-toggle[data-state="on"] {
-      background: rgba(181, 199, 210, 0.58);
-      box-shadow: 0 12px 26px rgba(110, 98, 132, 0.22);
+    .sound-toggle[data-state="on"]::after {
+      background: linear-gradient(135deg, rgba(173, 196, 207, 0.65), rgba(194, 180, 210, 0.65));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 24px rgba(110, 98, 132, 0.22);
     }
 
-    .sound-toggle:focus-visible {
-      box-shadow: 0 0 0 3px rgba(153, 138, 173, 0.36);
-    }
-
-    footer {
-      max-width: 540px;
-      text-align: center;
-      color: rgba(47, 37, 56, 0.55);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin: clamp(16px, 4vw, 48px) 0 0;
-    }
-
-    footer strong {
-      font-weight: 600;
+    .sound-toggle[data-state="off"]::after {
+      background: rgba(47, 37, 56, 0.28);
     }
 
     @media (max-width: 840px) {
@@ -541,18 +525,27 @@
         border-radius: 28px;
       }
 
-      .controls {
-        position: static;
-        transform: none;
-        margin-top: 18px;
-        box-shadow: 0 12px 28px rgba(110, 98, 132, 0.2);
+      .viewer-toolbar__nav {
+        box-shadow: 0 10px 22px rgba(110, 98, 132, 0.18);
       }
+    }
 
-      .page-indicator {
-        position: static;
-        transform: none;
-        margin-top: 12px;
-      }
+    .page {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fdfbf7;
+    }
+
+    .page img,
+    .page iframe,
+    .page svg {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -561,17 +554,66 @@
       }
     }
 
+    @media (max-width: 720px) {
+      body {
+        align-items: flex-start;
+      }
+
+      .page-shell {
+        width: 100%;
+        padding: clamp(24px, 6vw, 40px) clamp(16px, 6vw, 32px) clamp(40px, 10vw, 64px);
+      }
+
+      main {
+        width: 100%;
+      }
+
+      .book-frame {
+        padding: clamp(20px, 5vw, 26px);
+        border-radius: 26px;
+      }
+
+      #book {
+        height: min(62vh, 520px);
+      }
+
+      .viewer-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        max-width: none;
+      }
+
+      .viewer-toolbar__nav {
+        width: 100%;
+        justify-content: space-between;
+        padding: 10px 18px;
+      }
+
+      .viewer-button {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+      }
+
+      .page-indicator {
+        text-align: center;
+        width: 100%;
+      }
+
+      .sound-toggle {
+        align-self: center;
+        padding: 0.5rem 1.4rem 0.5rem 1.1rem;
+      }
+    }
+
     @media (max-width: 640px) {
       .page-shell {
         padding: 32px 24px 48px;
       }
 
-      .intro {
-        padding: 22px;
-      }
-
       #book {
-        height: min(64vh, 540px);
+        height: min(64vh, 500px);
       }
     }
   </style>
@@ -582,41 +624,25 @@
 
     <main>
       <section class="intro">
-        <p class="immersive-invite">Epistellaire — carnet vivant</p>
-        <h1>Laissez le livre respirer, contemplez chaque page.</h1>
-        <p>
-          Prenez place face à l’œuvre : l’espace disparaît, ne restent que les textures et les pigments.
-          Explorez au rythme des pages, en vous laissant guider par la lumière.
-        </p>
-        <p>
-          Un souffle discret enveloppe votre lecture. Utilisez les flèches du clavier ou les commandes pour feuilleter,
-          et revenez lorsque l’artiste ajoute une nouvelle création.
-        </p>
+        <h1>Epistellaire</h1>
+        <p>Feuilletez le carnet vivant en toute clarté.</p>
       </section>
 
       <section class="viewer" aria-label="Visionneuse du livre">
         <div class="book-frame">
-          <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false" aria-label="Activer ou couper l’ambiance sonore">Ambiance sonore</button>
           <div id="book" aria-live="polite" aria-label="Livre d’artiste"></div>
-          <p class="page-indicator" id="pageIndicator">Préparation du livre…</p>
-          <div class="controls" role="toolbar" aria-label="Contrôles du livre">
-            <button type="button" data-action="first">Première</button>
-            <button type="button" data-action="prev">Précédente</button>
-            <button type="button" data-action="next">Suivante</button>
-            <button type="button" data-action="last">Dernière</button>
-            <button type="button" data-action="zoomIn">Zoom +</button>
-            <button type="button" data-action="zoomOut">Zoom −</button>
+        </div>
+        <div class="viewer-toolbar" role="toolbar" aria-label="Contrôles du livre">
+          <div class="viewer-toolbar__nav" role="group" aria-label="Navigation entre les pages">
+            <button type="button" class="viewer-button" data-action="prev" aria-label="Page précédente">‹</button>
+            <p class="page-indicator" id="pageIndicator">Préparation du livre…</p>
+            <button type="button" class="viewer-button" data-action="next" aria-label="Page suivante">›</button>
           </div>
+          <button type="button" class="sound-toggle" data-sound-toggle data-state="off" aria-pressed="false" aria-label="Activer le son d’ambiance">Son</button>
         </div>
       </section>
     </main>
 
-    <footer>
-      <p>
-        <strong>Astuce&nbsp;:</strong> ouvrez le livre en plein écran pour un tête-à-tête prolongé et laissez-le vivant&nbsp;:
-        la dernière page se métamorphose au fil des nouvelles œuvres.
-      </p>
-    </footer>
   </div>
 
   <script type="application/json" id="pagesData">
@@ -784,7 +810,8 @@
         const active = ambientSound.isActive();
         soundToggle.setAttribute('aria-pressed', active ? 'true' : 'false');
         soundToggle.dataset.state = active ? 'on' : 'off';
-        soundToggle.textContent = active ? 'Ambiance activée' : 'Ambiance sonore';
+        soundToggle.setAttribute('aria-label', active ? 'Couper le son d’ambiance' : 'Activer le son d’ambiance');
+        soundToggle.textContent = 'Son';
       };
 
       const attemptAutoAmbient = () => {
@@ -937,9 +964,12 @@
 
           const computeStageSize = () => {
             const rect = bookEl.getBoundingClientRect();
-            const containerWidth = rect.width || bookEl.clientWidth || 720;
-            const width = Math.max(360, Math.min(960, Math.round(containerWidth)));
-            const height = Math.round(width * preferredAspectRatio);
+            const fallbackWidth = Math.min(window.innerWidth || 720, 720);
+            const containerWidth = rect.width || bookEl.clientWidth || fallbackWidth;
+            const width = Math.max(240, Math.min(960, Math.round(containerWidth)));
+            const targetHeight = Math.round(width * preferredAspectRatio);
+            const viewportLimit = Math.max(260, Math.round((window.innerHeight || targetHeight) * 0.82));
+            const height = Math.min(targetHeight, viewportLimit);
             return { width, height };
           };
 
