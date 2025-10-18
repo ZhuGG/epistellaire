@@ -3,114 +3,431 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Flipbook de l’artiste</title>
-  <meta name="description" content="Un livre numérique feuilletable — une nouvelle page ajoutée chaque jour."/>
-  <link rel="stylesheet" href="https://unpkg.com/page-flip/dist/css/page-flip.min.css"/>
+  <title>Epistellaire — Livre numérique</title>
+  <meta name="description" content="Feuilletez l’univers d’Epistellaire : un livre numérique pensé comme une œuvre d’art immersive." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/page-flip/dist/css/page-flip.min.css" />
   <style>
-    :root { color-scheme: light dark; }
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif; background: #0b0b0b; color: #eee; }
-    header { max-width: 980px; margin: 20px auto 0; padding: 0 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
-    header h1 { font-size: clamp(20px, 2.8vw, 28px); margin: 0; font-weight: 650; }
-    .toolbar { max-width: 980px; padding: 8px 16px 0; margin: 0 auto; display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; }
-    button { padding:.6rem .9rem; border:0; border-radius:.6rem; cursor:pointer; background:#1f1f1f; color:#eee; }
-    button:disabled { opacity:.4; cursor:not-allowed; }
-    #book { width: min(100vw, 980px); height: min(88vh, 720px); margin: 10px auto 24px; }
-    .page { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#fff; }
-    .page img, .page iframe, .page svg { max-width: 100%; max-height: 100%; object-fit: contain; display:block; }
-    footer { max-width:980px; margin: 0 auto 24px; padding: 0 16px; font-size: 14px; color:#bbb; }
-    a { color: #9ecbff; }
+    :root {
+      color-scheme: only light;
+      --bg: #07030f;
+      --bg-accent: rgba(112, 86, 214, 0.3);
+      --text-primary: #f5f1ff;
+      --text-secondary: rgba(245, 241, 255, 0.72);
+      --accent: #f0a5ff;
+      --accent-strong: #d476ff;
+      --surface: rgba(19, 13, 38, 0.72);
+      --surface-stroke: rgba(240, 165, 255, 0.18);
+      --shadow: 0 40px 120px rgba(23, 11, 54, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      color: var(--text-primary);
+      background: radial-gradient(circle at 20% 20%, rgba(159, 121, 255, 0.28), transparent 55%),
+        radial-gradient(circle at 80% 0%, rgba(255, 196, 196, 0.26), transparent 50%),
+        var(--bg);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: clamp(32px, 5vw, 56px) clamp(20px, 6vw, 72px);
+      gap: clamp(32px, 5vw, 56px);
+    }
+
+    .page-shell::after {
+      content: "";
+      position: absolute;
+      inset: 12% auto auto 55%;
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(240, 165, 255, 0.25) 0, rgba(240, 165, 255, 0) 70%);
+      filter: blur(12px);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: -1;
+      transform: translate(-25%, -10%);
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      mix-blend-mode: lighten;
+    }
+
+    .signature {
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: clamp(1.25rem, 2.4vw, 2rem);
+      letter-spacing: 0.24rem;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .site-header a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 4px;
+      transition: opacity 220ms ease;
+    }
+
+    .site-header a:hover {
+      opacity: 0.7;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+      gap: clamp(32px, 5vw, 80px);
+      align-items: center;
+    }
+
+    .intro h1 {
+      margin: 0 0 16px;
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      line-height: 1.1;
+      letter-spacing: 0.04em;
+    }
+
+    .intro p {
+      margin: 0 0 1.4rem;
+      color: var(--text-secondary);
+      font-size: clamp(1rem, 1.3vw, 1.2rem);
+      line-height: 1.6;
+      max-width: 34ch;
+    }
+
+    .intro .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 1.2rem;
+    }
+
+    .cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.75rem 1.4rem;
+      border-radius: 999px;
+      background: linear-gradient(130deg, rgba(240, 165, 255, 0.32), rgba(116, 90, 255, 0.55));
+      box-shadow: 0 18px 34px rgba(17, 7, 45, 0.45);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .cta a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 28px 50px rgba(17, 7, 45, 0.55);
+    }
+
+    .viewer {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .book-frame {
+      position: relative;
+      padding: clamp(18px, 3vw, 28px);
+      border-radius: 28px;
+      background: linear-gradient(160deg, rgba(13, 9, 28, 0.92), rgba(40, 20, 62, 0.68));
+      border: 1px solid var(--surface-stroke);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    #book {
+      width: min(100%, 860px);
+      height: min(78vh, 680px);
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+    }
+
+    .page img,
+    .page iframe,
+    .page svg {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .page-indicator {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 0.95rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(245, 241, 255, 0.7);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 999px;
+      background: rgba(19, 13, 38, 0.52);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .controls button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.05rem;
+      background: linear-gradient(135deg, rgba(240, 165, 255, 0.18), rgba(116, 90, 255, 0.35));
+      color: var(--text-primary);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 18px rgba(12, 7, 24, 0.55);
+    }
+
+    .controls button:hover,
+    .controls button:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      background: linear-gradient(135deg, rgba(240, 165, 255, 0.32), rgba(116, 90, 255, 0.48));
+    }
+
+    .controls button:active {
+      transform: translateY(0);
+    }
+
+    footer {
+      margin-top: auto;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      max-width: 680px;
+      line-height: 1.6;
+    }
+
+    footer strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    @media (max-width: 1080px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .viewer {
+        order: -1;
+      }
+
+      .intro h1 {
+        text-align: center;
+      }
+
+      .intro p,
+      .intro .cta {
+        text-align: center;
+        justify-content: center;
+      }
+
+      .site-header {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell {
+        padding: 32px 20px 48px;
+      }
+
+      .controls {
+        border-radius: 18px;
+      }
+
+      #book {
+        height: min(70vh, 580px);
+      }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Le Livre — feuilleter & suivre au quotidien</h1>
-    <div>
-      <a href="pages.json" download>pages.json</a>
-    </div>
-  </header>
+  <div class="page-shell">
+    <header class="site-header">
+      <p class="signature">Epistellaire</p>
+      <a href="pages.json" download aria-label="Télécharger la liste des pages">Télécharger la liste des pages</a>
+    </header>
 
-  <div class="toolbar">
-    <button id="first" title="Première page">⏮</button>
-    <button id="prev" title="Page précédente">◀︎</button>
-    <button id="next" title="Page suivante">▶︎</button>
-    <button id="last" title="Dernière page (nouveauté)">⏭</button>
-    <button id="zoomIn" title="Zoomer">＋</button>
-    <button id="zoomOut" title="Dézoomer">－</button>
+    <main>
+      <section class="intro">
+        <h1>Plonger dans l’œuvre vivante de l’artiste</h1>
+        <p>Chaque page révèle une constellation de textures, de mots et de nuances. Ce livre numérique prolonge l’expérience de la galerie : feuilletez, laissez les pages respirer, explorez les détails.</p>
+        <p>Utilisez les commandes lumineuses ou les flèches du clavier pour naviguer. Revenez régulièrement : la dernière page dévoile les pièces fraichement ajoutées.</p>
+        <div class="cta">
+          <a href="#book">Commencer la lecture ↗</a>
+        </div>
+      </section>
+
+      <section class="viewer" aria-label="Visionneuse du livre">
+        <div class="book-frame">
+          <div id="book" aria-live="polite" aria-label="Livre d’artiste"></div>
+          <p class="page-indicator" id="pageIndicator">Préparation du livre…</p>
+        </div>
+        <div class="controls" role="toolbar" aria-label="Contrôles du livre">
+          <button type="button" data-action="first">Première</button>
+          <button type="button" data-action="prev">Précédente</button>
+          <button type="button" data-action="next">Suivante</button>
+          <button type="button" data-action="last">Dernière</button>
+          <button type="button" data-action="zoomIn">Zoom +</button>
+          <button type="button" data-action="zoomOut">Zoom −</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>Astuce&nbsp;:</strong> commandez l’expérience complète en plein écran pour un face-à-face avec l’œuvre, ou laissez le livre ouvert — il accueillera automatiquement la prochaine création de l’artiste.</p>
+    </footer>
   </div>
-
-  <div id="book" aria-label="Flipbook"></div>
-
-  <footer>
-    <p>Astuce : utilisez aussi les flèches du clavier ← → pour naviguer. La dernière page correspond au dernier ajout.</p>
-  </footer>
 
   <script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.min.js"></script>
   <script>
-  (function () {
-    const bookEl = document.getElementById('book');
-    const qs = new URLSearchParams(location.search);
-    const startAtLast = qs.get('last') !== '0'; // par défaut aller à la fin
+    (function () {
+      const bookEl = document.getElementById('book');
+      const pageIndicator = document.getElementById('pageIndicator');
+      const qs = new URLSearchParams(location.search);
+      const startAtLast = qs.get('last') !== '0';
 
-    fetch('pages.json', {cache: 'no-store'})
-      .then(r => r.json())
-      .then((pages) => {
-        const book = new window.PageFlip(bookEl, {
-          width: 480, height: 680,
-          size: 'stretch',
-          showCover: true,
-          useMouseEvents: true,
-          maxShadowOpacity: 0.2,
-          mobileScrollSupport: true
-        });
+      const updateIndicator = (current, total, title) => {
+        const label = title ? ` — ${title}` : '';
+        pageIndicator.textContent = `Page ${current} / ${total}${label}`;
+      };
 
-        const pageEls = pages.map(p => {
-          const el = document.createElement('div');
-          el.className = 'page';
-          const ext = (p.src.split('.').pop() || '').toLowerCase();
-          if (ext === 'svg') {
-            // Inline SVG for better scaling if same-origin; else just <img>
+      fetch('pages.json', { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((pages) => {
+          const book = new window.PageFlip(bookEl, {
+            width: 520,
+            height: 720,
+            size: 'stretch',
+            showCover: true,
+            useMouseEvents: true,
+            maxShadowOpacity: 0.18,
+            mobileScrollSupport: true,
+          });
+
+          const pageEls = pages.map((p) => {
+            const el = document.createElement('div');
+            el.className = 'page';
             const img = document.createElement('img');
             img.src = p.src;
             img.alt = p.title || '';
             el.appendChild(img);
-          } else {
-            const img = document.createElement('img');
-            img.src = p.src;
-            img.alt = p.title || '';
-            el.appendChild(img);
-          }
-          return el;
+            return el;
+          });
+
+          book.loadFromHTML(pageEls);
+
+          const actions = {
+            first: () => book.flip(0),
+            prev: () => book.flipPrev(),
+            next: () => book.flipNext(),
+            last: () => book.flip(book.getPageCount() - 1),
+            zoomIn: () => book.update({
+              width: book.settings.width * 1.05,
+              height: book.settings.height * 1.05,
+            }),
+            zoomOut: () => book.update({
+              width: book.settings.width / 1.05,
+              height: book.settings.height / 1.05,
+            }),
+          };
+
+          document.querySelectorAll('[data-action]').forEach((button) => {
+            const action = actions[button.dataset.action];
+            if (typeof action === 'function') {
+              button.addEventListener('click', action);
+            }
+          });
+
+          const getCurrentIndex = () => {
+            if (typeof book.getCurrentPageIndex === 'function') {
+              return book.getCurrentPageIndex();
+            }
+            if (typeof book.getCurrentPage === 'function') {
+              return book.getCurrentPage();
+            }
+            return 0;
+          };
+
+          const syncIndicator = (pageIndex) => {
+            const total = book.getPageCount();
+            if (!total) {
+              pageIndicator.textContent = 'Aucune page disponible pour le moment.';
+              return;
+            }
+            const safeIndex = Math.max(0, Math.min(total - 1, pageIndex));
+            const current = safeIndex + 1;
+            const meta = pages[safeIndex] || {};
+            updateIndicator(current, total, meta.title);
+          };
+
+          book.on('flip', (e) => {
+            syncIndicator(e.data); // e.data is the new page index
+          });
+
+          addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') actions.prev();
+            if (e.key === 'ArrowRight') actions.next();
+            if (e.key === '+') actions.zoomIn();
+            if (e.key === '-' || e.key === '–') actions.zoomOut();
+          });
+
+          requestAnimationFrame(() => {
+            if (startAtLast) {
+              const lastIndex = Math.max(0, book.getPageCount() - 1);
+              book.flip(lastIndex);
+              syncIndicator(lastIndex);
+            } else {
+              syncIndicator(getCurrentIndex());
+            }
+          });
+        })
+        .catch((err) => {
+          pageIndicator.textContent = '';
+          bookEl.innerHTML = '<p style="padding:1rem; text-align:center">Impossible de charger <code>pages.json</code>. Vérifiez que le fichier existe et qu’il est valide.</p>';
+          console.error(err);
         });
-
-        book.loadFromHTML(pageEls);
-
-        // Controls
-        const byId = (id) => document.getElementById(id);
-        byId('prev').onclick = () => book.flipPrev();
-        byId('next').onclick = () => book.flipNext();
-        byId('first').onclick = () => book.flip(0);
-        byId('last').onclick = () => book.flip(book.getPageCount() - 1);
-        byId('zoomIn').onclick = () => book.update({ width: book.settings.width * 1.05, height: book.settings.height * 1.05 });
-        byId('zoomOut').onclick = () => book.update({ width: book.settings.width / 1.05, height: book.settings.height / 1.05 });
-
-        // Keyboard navigation
-        addEventListener('keydown', (e) => {
-          if (e.key === 'ArrowLeft') book.flipPrev();
-          if (e.key === 'ArrowRight') book.flipNext();
-          if (e.key === '+') byId('zoomIn').click();
-          if (e.key === '-') byId('zoomOut').click();
-        });
-
-        // Start at last page (latest update)
-        if (startAtLast) {
-          requestAnimationFrame(() => book.flip(book.getPageCount() - 1));
-        }
-      })
-      .catch(err => {
-        bookEl.innerHTML = '<p style="padding:1rem">Impossible de charger <code>pages.json</code>. Vérifiez que le fichier existe et qu’il est valide.</p>';
-        console.error(err);
-      });
-  })();
+    })();
   </script>
 </body>
 </html>
