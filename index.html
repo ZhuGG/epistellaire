@@ -150,11 +150,15 @@
     }
 
     #book {
-      width: min(100%, 860px);
-      height: min(78vh, 680px);
+      width: min(100%, 980px);
+      height: min(72vh, 640px);
       margin: 0 auto;
       border-radius: 16px;
       overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .native-book-viewport {
@@ -169,9 +173,9 @@
 
     .native-book-stage {
       position: relative;
-      width: min(100%, 520px);
+      width: min(100%, 960px);
       height: 100%;
-      aspect-ratio: 3 / 4;
+      aspect-ratio: 3 / 2;
       max-height: 100%;
       transform: scale(var(--book-scale, 1));
       transform-origin: center;
@@ -179,6 +183,58 @@
       perspective: 1600px;
       cursor: pointer;
       touch-action: pan-y;
+    }
+
+    .turnjs-viewport {
+      position: relative;
+      width: min(100%, 960px);
+      height: min(70vh, 620px);
+      transform: scale(var(--book-scale, 1));
+      transform-origin: center;
+      transition: transform 220ms ease;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+
+    .turnjs-viewport::before {
+      content: "";
+      position: absolute;
+      inset: 12% -8% -6%;
+      border-radius: 26px;
+      background: radial-gradient(
+        circle at center,
+        rgba(143, 126, 158, 0.28),
+        rgba(143, 126, 158, 0)
+      );
+      transform: translateZ(-1px);
+      filter: blur(18px);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .turnjs-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 24px 40px rgba(110, 98, 132, 0.16);
+      background: linear-gradient(160deg, #fdfbf7 0%, #f4f0ea 100%);
+    }
+
+    .turnjs-page {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      background: #fdfbf7;
+    }
+
+    .turnjs-page img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fdfbf7;
     }
 
     .native-book-stage::before {
@@ -506,6 +562,8 @@
     ]
   </script>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/turn.js@4/turn.min.js"></script>
   <script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.min.js"></script>
   <script>
     (function () {
@@ -578,10 +636,175 @@
             });
           };
 
+          let preferredAspectRatio = 0.62;
+
+          const calibrateAspectRatio = (metaList, onUpdate) => {
+            const candidate = metaList.find((meta) => typeof meta?.src === 'string');
+            if (!candidate) {
+              return;
+            }
+
+            const probe = new Image();
+            probe.decoding = 'async';
+            probe.src = candidate.src;
+
+            const update = () => {
+              if (!probe.naturalWidth || !probe.naturalHeight) {
+                return;
+              }
+              const ratio = probe.naturalHeight / probe.naturalWidth;
+              if (!ratio || Number.isNaN(ratio)) {
+                return;
+              }
+              const clamped = Math.max(0.45, Math.min(1.1, Number(ratio.toFixed(3))));
+              if (Math.abs(clamped - preferredAspectRatio) > 0.01) {
+                preferredAspectRatio = clamped;
+                onUpdate?.();
+              }
+            };
+
+            if (probe.complete) {
+              update();
+            } else {
+              probe.addEventListener('load', update, { once: true });
+            }
+          };
+
+          const computeStageSize = () => {
+            const rect = bookEl.getBoundingClientRect();
+            const containerWidth = rect.width || bookEl.clientWidth || 720;
+            const width = Math.max(360, Math.min(960, Math.round(containerWidth)));
+            const height = Math.round(width * preferredAspectRatio);
+            return { width, height };
+          };
+
+          const setupResizeListener = (callback) => {
+            let ticking = false;
+            const handler = () => {
+              if (ticking) return;
+              ticking = true;
+              requestAnimationFrame(() => {
+                ticking = false;
+                callback();
+              });
+            };
+            addEventListener('resize', handler);
+            return () => removeEventListener('resize', handler);
+          };
+
+          const setupWithTurnJs = () => {
+            const $ = window.jQuery;
+            if (!$ || typeof $.fn?.turn !== 'function') {
+              return false;
+            }
+
+            bookEl.innerHTML = '';
+
+            const viewport = document.createElement('div');
+            viewport.className = 'turnjs-viewport';
+            viewport.style.setProperty('--book-scale', '1');
+
+            const stage = document.createElement('div');
+            stage.className = 'turnjs-stage';
+            viewport.appendChild(stage);
+            bookEl.appendChild(viewport);
+
+            pages.forEach((meta) => {
+              const page = document.createElement('div');
+              page.className = 'turnjs-page page';
+              const img = document.createElement('img');
+              img.decoding = 'async';
+              img.loading = 'lazy';
+              img.draggable = false;
+              img.src = meta.src;
+              img.alt = meta.title || '';
+              page.appendChild(img);
+              stage.appendChild(page);
+            });
+
+            const initialSize = computeStageSize();
+            viewport.style.width = `${initialSize.width}px`;
+            viewport.style.height = `${initialSize.height}px`;
+
+            const $stage = $(stage);
+            $stage.turn({
+              width: initialSize.width,
+              height: initialSize.height,
+              display: 'single',
+              autoCenter: true,
+              duration: 1100,
+              gradients: true,
+              elevation: 70,
+            });
+
+            const applySize = () => {
+              const { width, height } = computeStageSize();
+              viewport.style.width = `${width}px`;
+              viewport.style.height = `${height}px`;
+              $stage.turn('size', width, height);
+            };
+
+            setupResizeListener(applySize);
+            calibrateAspectRatio(pages, applySize);
+
+            let currentScale = 1;
+            const applyScale = () => {
+              viewport.style.setProperty('--book-scale', currentScale.toFixed(3));
+            };
+            applyScale();
+
+            const syncIndicator = (pageNumber) => {
+              const safePage = Math.max(1, Math.min(pages.length, pageNumber));
+              const meta = pages[safePage - 1] || {};
+              updateIndicator(safePage, pages.length, meta.title);
+            };
+
+            $stage.on('turned', (_event, pageNumber) => {
+              syncIndicator(pageNumber);
+            });
+
+            const actions = {
+              first: () => $stage.turn('page', 1),
+              prev: () => $stage.turn('previous'),
+              next: () => $stage.turn('next'),
+              last: () => $stage.turn('page', pages.length),
+              zoomIn: () => {
+                currentScale = Math.min(currentScale + 0.12, 1.7);
+                applyScale();
+              },
+              zoomOut: () => {
+                currentScale = Math.max(currentScale - 0.12, 0.7);
+                applyScale();
+              },
+            };
+
+            viewport.addEventListener('click', (event) => {
+              const rect = viewport.getBoundingClientRect();
+              const isLeft = event.clientX - rect.left < rect.width / 2;
+              if (isLeft) {
+                actions.prev();
+              } else {
+                actions.next();
+              }
+            });
+
+            bindControls(actions);
+            bindKeyboard(actions);
+
+            requestAnimationFrame(() => {
+              const initialPage = startAtLast ? pages.length : 1;
+              $stage.turn('page', initialPage);
+              syncIndicator(initialPage);
+            });
+
+            return true;
+          };
+
           const setupWithPageFlip = () => {
+            const baseSize = computeStageSize();
             const book = new window.PageFlip(bookEl, {
-              width: 520,
-              height: 720,
+              width: baseSize.width,
+              height: baseSize.height,
               size: 'stretch',
               showCover: true,
               useMouseEvents: true,
@@ -603,19 +826,32 @@
 
             book.loadFromHTML(htmlContainer.children);
 
+            let sizeMultiplier = 1;
+
+            const applySize = () => {
+              const { width, height } = computeStageSize();
+              const scaledWidth = Math.round(width * sizeMultiplier);
+              const scaledHeight = Math.round(height * sizeMultiplier);
+              book.update({ width: scaledWidth, height: scaledHeight });
+            };
+
+            applySize();
+            setupResizeListener(applySize);
+            calibrateAspectRatio(pages, applySize);
+
             const actions = {
               first: () => book.flip(0),
               prev: () => book.flipPrev(),
               next: () => book.flipNext(),
               last: () => book.flip(book.getPageCount() - 1),
-              zoomIn: () => book.update({
-                width: book.settings.width * 1.05,
-                height: book.settings.height * 1.05,
-              }),
-              zoomOut: () => book.update({
-                width: book.settings.width / 1.05,
-                height: book.settings.height / 1.05,
-              }),
+              zoomIn: () => {
+                sizeMultiplier = Math.min(sizeMultiplier + 0.12, 1.7);
+                applySize();
+              },
+              zoomOut: () => {
+                sizeMultiplier = Math.max(sizeMultiplier - 0.12, 0.7);
+                applySize();
+              },
             };
 
             const getCurrentIndex = () => {
@@ -696,6 +932,18 @@
             stage.append(currentSheet.el, standbySheet.el);
             viewport.append(stage);
             bookEl.appendChild(viewport);
+
+            const applyStageSize = () => {
+              const { width, height } = computeStageSize();
+              viewport.style.width = `${width}px`;
+              viewport.style.height = `${height}px`;
+              stage.style.width = `${width}px`;
+              stage.style.height = `${height}px`;
+            };
+
+            applyStageSize();
+            setupResizeListener(applyStageSize);
+            calibrateAspectRatio(pages, applyStageSize);
 
             let currentIndex = clampIndex(startAtLast ? pages.length - 1 : 0);
             let currentScale = 1;
@@ -845,11 +1093,16 @@
             syncState();
           };
 
+          if (setupWithTurnJs()) {
+            return;
+          }
+
           if (typeof window.PageFlip === 'function') {
             setupWithPageFlip();
-          } else {
-            setupFallback();
+            return;
           }
+
+          setupFallback();
         })
         .catch((err) => {
           pageIndicator.textContent = 'Les pages seront bientôt disponibles.';
