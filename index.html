@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flipbook de l’artiste</title>
+  <meta name="description" content="Un livre numérique feuilletable — une nouvelle page ajoutée chaque jour."/>
+  <link rel="stylesheet" href="https://unpkg.com/page-flip/dist/css/page-flip.min.css"/>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif; background: #0b0b0b; color: #eee; }
+    header { max-width: 980px; margin: 20px auto 0; padding: 0 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    header h1 { font-size: clamp(20px, 2.8vw, 28px); margin: 0; font-weight: 650; }
+    .toolbar { max-width: 980px; padding: 8px 16px 0; margin: 0 auto; display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; }
+    button { padding:.6rem .9rem; border:0; border-radius:.6rem; cursor:pointer; background:#1f1f1f; color:#eee; }
+    button:disabled { opacity:.4; cursor:not-allowed; }
+    #book { width: min(100vw, 980px); height: min(88vh, 720px); margin: 10px auto 24px; }
+    .page { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#fff; }
+    .page img, .page iframe, .page svg { max-width: 100%; max-height: 100%; object-fit: contain; display:block; }
+    footer { max-width:980px; margin: 0 auto 24px; padding: 0 16px; font-size: 14px; color:#bbb; }
+    a { color: #9ecbff; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Le Livre — feuilleter & suivre au quotidien</h1>
+    <div>
+      <a href="pages.json" download>pages.json</a>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button id="first" title="Première page">⏮</button>
+    <button id="prev" title="Page précédente">◀︎</button>
+    <button id="next" title="Page suivante">▶︎</button>
+    <button id="last" title="Dernière page (nouveauté)">⏭</button>
+    <button id="zoomIn" title="Zoomer">＋</button>
+    <button id="zoomOut" title="Dézoomer">－</button>
+  </div>
+
+  <div id="book" aria-label="Flipbook"></div>
+
+  <footer>
+    <p>Astuce : utilisez aussi les flèches du clavier ← → pour naviguer. La dernière page correspond au dernier ajout.</p>
+  </footer>
+
+  <script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.min.js"></script>
+  <script>
+  (function () {
+    const bookEl = document.getElementById('book');
+    const qs = new URLSearchParams(location.search);
+    const startAtLast = qs.get('last') !== '0'; // par défaut aller à la fin
+
+    fetch('pages.json', {cache: 'no-store'})
+      .then(r => r.json())
+      .then((pages) => {
+        const book = new window.PageFlip(bookEl, {
+          width: 480, height: 680,
+          size: 'stretch',
+          showCover: true,
+          useMouseEvents: true,
+          maxShadowOpacity: 0.2,
+          mobileScrollSupport: true
+        });
+
+        const pageEls = pages.map(p => {
+          const el = document.createElement('div');
+          el.className = 'page';
+          const ext = (p.src.split('.').pop() || '').toLowerCase();
+          if (ext === 'svg') {
+            // Inline SVG for better scaling if same-origin; else just <img>
+            const img = document.createElement('img');
+            img.src = p.src;
+            img.alt = p.title || '';
+            el.appendChild(img);
+          } else {
+            const img = document.createElement('img');
+            img.src = p.src;
+            img.alt = p.title || '';
+            el.appendChild(img);
+          }
+          return el;
+        });
+
+        book.loadFromHTML(pageEls);
+
+        // Controls
+        const byId = (id) => document.getElementById(id);
+        byId('prev').onclick = () => book.flipPrev();
+        byId('next').onclick = () => book.flipNext();
+        byId('first').onclick = () => book.flip(0);
+        byId('last').onclick = () => book.flip(book.getPageCount() - 1);
+        byId('zoomIn').onclick = () => book.update({ width: book.settings.width * 1.05, height: book.settings.height * 1.05 });
+        byId('zoomOut').onclick = () => book.update({ width: book.settings.width / 1.05, height: book.settings.height / 1.05 });
+
+        // Keyboard navigation
+        addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') book.flipPrev();
+          if (e.key === 'ArrowRight') book.flipNext();
+          if (e.key === '+') byId('zoomIn').click();
+          if (e.key === '-') byId('zoomOut').click();
+        });
+
+        // Start at last page (latest update)
+        if (startAtLast) {
+          requestAnimationFrame(() => book.flip(book.getPageCount() - 1));
+        }
+      })
+      .catch(err => {
+        bookEl.innerHTML = '<p style="padding:1rem">Impossible de charger <code>pages.json</code>. Vérifiez que le fichier existe et qu’il est valide.</p>';
+        console.error(err);
+      });
+  })();
+  </script>
+</body>
+</html>
