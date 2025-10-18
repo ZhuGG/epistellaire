@@ -8,7 +8,19 @@
     "title": "Jour 1"
   },
   {
-    "src": "assets/pages/003.svg",
+    "src": "assets/pages/003.jpg",
     "title": "Jour 2"
+  },
+   {
+    "src": "assets/pages/004.jpg",
+    "title": "Jour 3"
+  },
+   {
+    "src": "assets/pages/005.jpg",
+    "title": "Jour 4"
+  },
+   {
+    "src": "assets/pages/00.jpg",
+    "title": "Jour 5"
   }
 ]
