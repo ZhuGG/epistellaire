@@ -157,21 +157,175 @@
       overflow: hidden;
     }
 
-    .fallback-viewer {
+    .native-book-viewport {
+      position: relative;
       width: 100%;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.6);
+      overflow: hidden;
     }
 
-    .fallback-viewer img {
-      max-width: 100%;
+    .native-book-stage {
+      position: relative;
+      width: min(100%, 520px);
+      height: 100%;
+      aspect-ratio: 3 / 4;
       max-height: 100%;
-      object-fit: contain;
-      transition: transform 200ms ease;
+      transform: scale(var(--book-scale, 1));
       transform-origin: center;
+      transition: transform 220ms ease;
+      perspective: 1600px;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+
+    .native-book-stage::before {
+      content: "";
+      position: absolute;
+      inset: 12% -8% -6%;
+      border-radius: 26px;
+      background: radial-gradient(
+        circle at center,
+        rgba(143, 126, 158, 0.28),
+        rgba(143, 126, 158, 0)
+      );
+      transform: translateZ(-1px);
+      filter: blur(18px);
+      opacity: 0.75;
+    }
+
+    .native-sheet {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #fdfbf7 0%, #f4f0ea 100%);
+      box-shadow: 0 24px 40px rgba(110, 98, 132, 0.16);
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      pointer-events: none;
+    }
+
+    .native-sheet img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fdfbf7;
+    }
+
+    .native-sheet__shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.38) 0%,
+        rgba(255, 255, 255, 0) 42%,
+        rgba(120, 110, 143, 0.08) 100%
+      );
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .native-sheet--standby {
+      opacity: 0;
+    }
+
+    .native-sheet--current {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .native-sheet--flip-forward,
+    .native-sheet--reveal-forward {
+      transform-origin: left center;
+      animation-duration: 0.85s;
+      animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+      animation-fill-mode: forwards;
+    }
+
+    .native-sheet--flip-backward,
+    .native-sheet--reveal-backward {
+      transform-origin: right center;
+      animation-duration: 0.85s;
+      animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+      animation-fill-mode: forwards;
+    }
+
+    .native-sheet--flip-forward {
+      animation-name: nativeFlipForward;
+      z-index: 3;
+    }
+
+    .native-sheet--reveal-forward {
+      animation-name: nativeRevealForward;
+      z-index: 2;
+    }
+
+    .native-sheet--flip-backward {
+      animation-name: nativeFlipBackward;
+      z-index: 3;
+    }
+
+    .native-sheet--reveal-backward {
+      animation-name: nativeRevealBackward;
+      z-index: 2;
+    }
+
+    @keyframes nativeFlipForward {
+      0% {
+        transform: rotateY(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: rotateY(-180deg);
+        opacity: 0.2;
+      }
+    }
+
+    @keyframes nativeRevealForward {
+      0% {
+        transform: rotateY(180deg);
+        opacity: 0.1;
+      }
+      100% {
+        transform: rotateY(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes nativeFlipBackward {
+      0% {
+        transform: rotateY(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: rotateY(180deg);
+        opacity: 0.2;
+      }
+    }
+
+    @keyframes nativeRevealBackward {
+      0% {
+        transform: rotateY(-180deg);
+        opacity: 0.1;
+      }
+      100% {
+        transform: rotateY(0deg);
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .native-sheet--flip-forward,
+      .native-sheet--reveal-forward,
+      .native-sheet--flip-backward,
+      .native-sheet--reveal-backward {
+        animation-duration: 0.01ms !important;
+      }
     }
 
     .page {
@@ -435,17 +589,19 @@
               mobileScrollSupport: true,
             });
 
-            const pageEls = pages.map((p) => {
+            const htmlContainer = document.createElement('div');
+
+            pages.forEach((p) => {
               const el = document.createElement('div');
               el.className = 'page';
               const img = document.createElement('img');
               img.src = p.src;
               img.alt = p.title || '';
               el.appendChild(img);
-              return el;
+              htmlContainer.appendChild(el);
             });
 
-            book.loadFromHTML(pageEls);
+            book.loadFromHTML(htmlContainer.children);
 
             const actions = {
               first: () => book.flip(0),
@@ -504,63 +660,189 @@
 
           const setupFallback = () => {
             console.warn(
-              'La bibliothèque PageFlip est indisponible. Activation du visionnage statique.',
+              'La bibliothèque PageFlip est indisponible. Activation du feuilletage natif.',
             );
             bookEl.innerHTML = '';
 
-            const container = document.createElement('div');
-            container.className = 'fallback-viewer';
-            const img = document.createElement('img');
-            img.decoding = 'async';
-            img.loading = 'lazy';
-            container.appendChild(img);
-            bookEl.appendChild(container);
-
-            let currentIndex = startAtLast ? pages.length - 1 : 0;
-            let currentScale = 1;
-
             const clampIndex = (value) => Math.max(0, Math.min(pages.length - 1, value));
 
-            const applyState = () => {
-              const safeIndex = clampIndex(currentIndex);
-              const meta = pages[safeIndex] || {};
-              currentIndex = safeIndex;
-              img.src = meta.src;
-              img.alt = meta.title || '';
-              img.style.transform = `scale(${currentScale})`;
-              updateIndicator(safeIndex + 1, pages.length, meta.title);
+            const viewport = document.createElement('div');
+            viewport.className = 'native-book-viewport';
+
+            const stage = document.createElement('div');
+            stage.className = 'native-book-stage';
+            stage.style.setProperty('--book-scale', '1');
+
+            const createSheet = (name) => {
+              const el = document.createElement('figure');
+              el.className = `native-sheet native-sheet--${name} native-sheet--standby`;
+              el.setAttribute('aria-hidden', 'true');
+
+              const img = document.createElement('img');
+              img.decoding = 'async';
+              img.loading = 'lazy';
+              el.appendChild(img);
+
+              const shine = document.createElement('div');
+              shine.className = 'native-sheet__shine';
+              el.appendChild(shine);
+
+              return { el, img };
+            };
+
+            let currentSheet = createSheet('current');
+            let standbySheet = createSheet('standby');
+
+            stage.append(currentSheet.el, standbySheet.el);
+            viewport.append(stage);
+            bookEl.appendChild(viewport);
+
+            let currentIndex = clampIndex(startAtLast ? pages.length - 1 : 0);
+            let currentScale = 1;
+            let isFlipping = false;
+            const prefersReducedMotion =
+              typeof window.matchMedia === 'function' &&
+              window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const preloaded = new Set();
+
+            const preloadAround = (index) => {
+              [index - 1, index + 1].forEach((i) => {
+                const meta = pages[clampIndex(i)];
+                if (!meta || meta === pages[index] || preloaded.has(meta.src)) return;
+                preloaded.add(meta.src);
+                const img = new Image();
+                img.src = meta.src;
+              });
+            };
+
+            const updateSheet = (sheet, meta) => {
+              if (!meta) {
+                sheet.el.classList.add('native-sheet--standby');
+                sheet.el.classList.remove('native-sheet--current');
+                sheet.el.setAttribute('aria-hidden', 'true');
+                sheet.img.removeAttribute('src');
+                sheet.img.alt = '';
+                return;
+              }
+
+              sheet.el.classList.remove('native-sheet--standby');
+              sheet.el.classList.remove('native-sheet--current');
+              sheet.el.setAttribute('aria-hidden', 'false');
+              sheet.img.src = meta.src;
+              sheet.img.alt = meta.title || '';
+            };
+
+            const applyScale = () => {
+              stage.style.setProperty('--book-scale', currentScale.toFixed(3));
+            };
+
+            const syncState = () => {
+              const meta = pages[currentIndex];
+              updateSheet(currentSheet, meta);
+              currentSheet.el.classList.add('native-sheet--current');
+              currentSheet.el.setAttribute('aria-hidden', 'false');
+              updateSheet(standbySheet, null);
+              updateIndicator(currentIndex + 1, pages.length, meta?.title);
+              applyScale();
+              preloadAround(currentIndex);
+            };
+
+            const flipTo = (targetIndex) => {
+              const safeTarget = clampIndex(targetIndex);
+              if (safeTarget === currentIndex || isFlipping) {
+                return;
+              }
+
+              if (prefersReducedMotion) {
+                currentIndex = safeTarget;
+                syncState();
+                return;
+              }
+
+              const direction = safeTarget > currentIndex ? 'forward' : 'backward';
+              isFlipping = true;
+
+              const revealClass =
+                direction === 'forward'
+                  ? 'native-sheet--reveal-forward'
+                  : 'native-sheet--reveal-backward';
+              const flipClass =
+                direction === 'forward'
+                  ? 'native-sheet--flip-forward'
+                  : 'native-sheet--flip-backward';
+
+              updateSheet(standbySheet, pages[safeTarget]);
+              standbySheet.el.classList.remove('native-sheet--current');
+              standbySheet.el.classList.remove('native-sheet--standby');
+              standbySheet.el.classList.add(revealClass);
+
+              currentSheet.el.classList.remove('native-sheet--current');
+              currentSheet.el.classList.add(flipClass);
+
+              let finished = 0;
+              const handleAnimationEnd = (event) => {
+                if (event.target !== event.currentTarget) return;
+                finished += 1;
+                if (finished < 2) return;
+
+                currentSheet.el.classList.remove(flipClass);
+                currentSheet.el.classList.add('native-sheet--standby');
+                currentSheet.el.setAttribute('aria-hidden', 'true');
+
+                standbySheet.el.classList.remove(revealClass);
+                standbySheet.el.classList.add('native-sheet--current');
+
+                currentSheet.el.removeEventListener('animationend', handleAnimationEnd);
+                standbySheet.el.removeEventListener('animationend', handleAnimationEnd);
+
+                const temp = currentSheet;
+                currentSheet = standbySheet;
+                standbySheet = temp;
+
+                currentIndex = safeTarget;
+                updateIndicator(currentIndex + 1, pages.length, pages[currentIndex]?.title);
+                updateSheet(standbySheet, null);
+                preloadAround(currentIndex);
+
+                isFlipping = false;
+              };
+
+              currentSheet.el.addEventListener('animationend', handleAnimationEnd);
+              standbySheet.el.addEventListener('animationend', handleAnimationEnd);
+
+              // force reflow to allow animation to trigger consistently
+              void standbySheet.el.offsetWidth;
             };
 
             const actions = {
-              first: () => {
-                currentIndex = 0;
-                applyState();
-              },
-              prev: () => {
-                currentIndex = clampIndex(currentIndex - 1);
-                applyState();
-              },
-              next: () => {
-                currentIndex = clampIndex(currentIndex + 1);
-                applyState();
-              },
-              last: () => {
-                currentIndex = pages.length - 1;
-                applyState();
-              },
+              first: () => flipTo(0),
+              prev: () => flipTo(currentIndex - 1),
+              next: () => flipTo(currentIndex + 1),
+              last: () => flipTo(pages.length - 1),
               zoomIn: () => {
-                currentScale = Math.min(currentScale + 0.1, 3);
-                applyState();
+                currentScale = Math.min(currentScale + 0.12, 1.7);
+                applyScale();
               },
               zoomOut: () => {
-                currentScale = Math.max(currentScale - 0.1, 0.5);
-                applyState();
+                currentScale = Math.max(currentScale - 0.12, 0.7);
+                applyScale();
               },
             };
 
+            stage.addEventListener('click', (event) => {
+              const rect = stage.getBoundingClientRect();
+              const isLeft = event.clientX - rect.left < rect.width / 2;
+              if (isLeft) {
+                actions.prev();
+              } else {
+                actions.next();
+              }
+            });
+
             bindControls(actions);
             bindKeyboard(actions);
-            applyState();
+            syncState();
           };
 
           if (typeof window.PageFlip === 'function') {
