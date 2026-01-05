@@ -5,22 +5,18 @@
   },
   {
     "src": "assets/pages/002.jpg",
-    "title": "Jour 1"
+    "title": "Récit 01"
   },
   {
     "src": "assets/pages/003.jpg",
-    "title": "Jour 2"
+    "title": "Récit 02"
   },
-   {
+  {
     "src": "assets/pages/004.jpg",
-    "title": "Jour 3"
+    "title": "Récit 03"
   },
-   {
+  {
     "src": "assets/pages/005.jpg",
-    "title": "Jour 4"
-  },
-   {
-    "src": "assets/pages/00.jpg",
-    "title": "Jour 5"
+    "title": "Récit 04"
   }
 ]
