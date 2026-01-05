@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Epistellaire — Livre numérique</title>
-  <meta name="description" content="Feuilletez l’univers d’Epistellaire : un livre numérique pensé comme une œuvre d’art immersive." />
+  <meta name="description" content="Feuilletez Epistellaire, un livre numérique sensible et lumineux, pensé comme une œuvre d'art en devenir." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -12,15 +12,13 @@
   <style>
     :root {
       color-scheme: only light;
-      --bg: #f9f6f2;
-      --bg-accent: #f1ede6;
-      --text-primary: #2f2538;
-      --text-secondary: rgba(47, 37, 56, 0.68);
-      --accent: #b48fbf;
-      --accent-strong: #9d7bb5;
-      --surface: rgba(255, 255, 255, 0.92);
-      --surface-stroke: rgba(182, 164, 198, 0.28);
-      --shadow: 0 28px 72px rgba(110, 98, 132, 0.18);
+      --ink: #1f1a28;
+      --ink-muted: rgba(31, 26, 40, 0.65);
+      --paper: #f7f2ec;
+      --paper-soft: rgba(255, 255, 255, 0.9);
+      --accent: #c6a6cf;
+      --accent-strong: #9a78b5;
+      --shadow: 0 30px 80px rgba(67, 56, 86, 0.22);
     }
 
     * {
@@ -30,717 +28,287 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-      color: var(--text-primary);
-      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.92) 0%, rgba(237, 232, 223, 0.88) 35%, var(--bg) 100%);
-      position: relative;
-      overflow-x: hidden;
-      overflow-y: auto;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 20%, rgba(211, 201, 222, 0.5), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(183, 207, 214, 0.35), transparent 40%),
+        linear-gradient(120deg, #fbf8f4 0%, #f3ece4 48%, #f7f1ea 100%);
       display: flex;
-      justify-content: center;
       align-items: stretch;
+      justify-content: center;
     }
 
-    body::before {
-      content: "";
+    .grain {
       position: fixed;
-      inset: -20%;
+      inset: 0;
       pointer-events: none;
-      background: radial-gradient(circle at 25% 15%, rgba(192, 177, 202, 0.4), transparent 55%),
-        radial-gradient(circle at 80% 10%, rgba(184, 203, 213, 0.32), transparent 50%),
-        radial-gradient(circle at 50% 100%, rgba(173, 152, 185, 0.32), transparent 60%);
-      filter: blur(18px);
-      opacity: 0.65;
+      background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+      opacity: 0.6;
       z-index: 0;
     }
 
-    .page-shell {
-      min-height: 100vh;
-      position: relative;
+    .shell {
+      width: min(1200px, 100%);
+      padding: clamp(28px, 6vw, 72px);
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: clamp(24px, 6vw, 80px);
-      gap: clamp(24px, 5vw, 48px);
-      z-index: 1;
-    }
-
-    .page-shell > *:not(.particle-layer) {
+      gap: clamp(28px, 4vw, 56px);
       position: relative;
-      z-index: 2;
-    }
-
-    .particle-layer {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
       z-index: 1;
-      mix-blend-mode: screen;
     }
 
-    .particle-layer .particle {
-      position: absolute;
-      width: var(--size, 3px);
-      height: var(--size, 3px);
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 0 12px rgba(200, 210, 220, 0.75);
-      opacity: 0;
-      animation: floatParticle var(--duration, 12s) linear infinite;
-      animation-delay: var(--delay, 0s);
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
     }
 
-    @keyframes floatParticle {
-      0% {
-        transform: translate3d(0, 40vh, 0) scale(0.8);
-        opacity: 0;
-      }
-      20% {
-        opacity: 0.35;
-      }
-      50% {
-        opacity: 0.5;
-      }
-      100% {
-        transform: translate3d(0, -60vh, 0) scale(1.2);
-        opacity: 0;
-      }
+    .identity {
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .identity h1 {
+      margin: 0;
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: clamp(2.4rem, 4vw, 3.5rem);
+    }
+
+    .identity p {
+      margin: 0;
+      font-size: clamp(1rem, 1.4vw, 1.2rem);
+      line-height: 1.7;
+      color: var(--ink-muted);
+    }
+
+    .meta {
+      display: grid;
+      gap: 8px;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.26em;
+      color: rgba(31, 26, 40, 0.55);
     }
 
     main {
       display: grid;
-      grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+      grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+      gap: clamp(28px, 6vw, 80px);
       align-items: center;
-      gap: clamp(32px, 8vw, 92px);
-      width: min(1180px, 100%);
     }
 
-    .intro {
-      max-width: 420px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      text-align: left;
-      align-items: flex-start;
+    .aside {
+      display: grid;
+      gap: 20px;
     }
 
-    .intro::after {
-      content: "";
-      width: 64px;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(180, 143, 191, 0.68), rgba(255, 255, 255, 0));
+    .aside-card {
+      padding: 20px 22px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(170, 156, 187, 0.25);
+      box-shadow: 0 20px 40px rgba(86, 76, 102, 0.14);
+      backdrop-filter: blur(12px);
     }
 
-    .intro h1 {
+    .aside-card h2 {
+      margin: 0 0 8px;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .aside-card p {
       margin: 0;
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
-      line-height: 1.04;
-      letter-spacing: 0.04em;
-      font-weight: 500;
-    }
-
-    .intro p {
-      margin: 0;
-      color: var(--text-secondary);
-      font-size: clamp(1.02rem, 1.4vw, 1.18rem);
-      line-height: 1.7;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--ink-muted);
     }
 
     .viewer {
       position: relative;
-      width: min(100%, 920px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: clamp(16px, 3vw, 28px);
-      padding: clamp(24px, 4vw, 36px) clamp(18px, 3vw, 30px);
+      display: grid;
+      gap: 16px;
     }
 
-    .viewer::before,
-    .viewer::after {
-      content: "";
-      position: absolute;
-      inset: 8% 8% 12%;
-      border-radius: 56px;
-      background: radial-gradient(circle at 30% 20%, rgba(210, 198, 226, 0.46), transparent 62%),
-        radial-gradient(circle at 70% 80%, rgba(179, 214, 212, 0.3), transparent 65%);
-      filter: blur(32px);
-      opacity: 0.8;
-      z-index: 0;
-    }
-
-    .viewer::after {
-      inset: 2% 12% 18%;
-      background: radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.8), transparent 70%);
-      filter: blur(60px);
-      opacity: 0.9;
-    }
-
-    .book-frame {
+    .book-wrapper {
       position: relative;
       width: 100%;
-      padding: clamp(12px, 2vw, 18px);
-      border-radius: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: visible;
-      z-index: 1;
-    }
-
-    .book-frame::before,
-    .book-frame::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(140deg, rgba(255, 255, 255, 0.85), rgba(233, 228, 240, 0.25));
-      box-shadow: 0 38px 90px rgba(110, 98, 132, 0.24);
-      backdrop-filter: blur(22px);
-      z-index: -2;
-    }
-
-    .book-frame::after {
-      inset: -12% -10% -18%;
-      background: radial-gradient(circle at 50% 20%, rgba(180, 143, 191, 0.28), transparent 65%);
-      filter: blur(32px);
-      z-index: -3;
+      padding: clamp(16px, 3vw, 26px);
+      border-radius: 32px;
+      background: linear-gradient(140deg, rgba(255, 255, 255, 0.85), rgba(234, 226, 239, 0.2));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(170, 156, 187, 0.25);
     }
 
     #book {
       width: 100%;
       height: min(70vh, 680px);
-      margin: 0 auto;
-      border-radius: 28px;
+      border-radius: 24px;
       overflow: hidden;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(160deg, #fefcfa 0%, #f2ede7 100%);
-      box-shadow: 0 28px 70px rgba(73, 63, 92, 0.25);
-      transition: transform 320ms ease, box-shadow 320ms ease;
+      background: linear-gradient(160deg, #fffaf5 0%, #f4eee7 100%);
+      box-shadow: 0 22px 60px rgba(66, 56, 84, 0.2);
     }
 
-    #book::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.65), transparent 70%);
-      pointer-events: none;
-      mix-blend-mode: screen;
-      opacity: 0.8;
-    }
-
-    #book:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow: 0 38px 90px rgba(73, 63, 92, 0.32);
-    }
-
-    .native-book-viewport {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .native-book-stage {
-      position: relative;
-      width: min(100%, 960px);
-      height: 100%;
-      aspect-ratio: 3 / 2;
-      max-height: 100%;
-      transform: scale(var(--book-scale, 1));
-      transform-origin: center;
-      transition: transform 220ms ease;
-      perspective: 1600px;
-      cursor: pointer;
-      touch-action: pan-y;
-    }
-
-    .turnjs-viewport {
-      position: relative;
-      width: min(100%, 960px);
-      height: min(70vh, 620px);
-      transform: scale(var(--book-scale, 1));
-      transform-origin: center;
-      transition: transform 220ms ease;
-      cursor: pointer;
-      touch-action: pan-y;
-    }
-
-    .turnjs-viewport::before {
-      content: "";
-      position: absolute;
-      inset: 12% -8% -6%;
-      border-radius: 26px;
-      background: radial-gradient(
-        circle at center,
-        rgba(143, 126, 158, 0.28),
-        rgba(143, 126, 158, 0)
-      );
-      transform: translateZ(-1px);
-      filter: blur(18px);
-      opacity: 0.75;
-      pointer-events: none;
-    }
-
-    .turnjs-stage {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 28px 50px rgba(110, 98, 132, 0.18);
-      background: linear-gradient(160deg, #fdfbf7 0%, #f4f0ea 100%);
-    }
-
-    .turnjs-page {
-      width: 100%;
-      height: 100%;
+    .toolbar {
       display: grid;
-      place-items: center;
-      background: #fdfbf7;
-    }
-
-    .turnjs-page img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #fdfbf7;
-    }
-
-    .native-book-stage::before {
-      content: "";
-      position: absolute;
-      inset: 12% -8% -6%;
-      border-radius: 26px;
-      background: radial-gradient(
-        circle at center,
-        rgba(143, 126, 158, 0.28),
-        rgba(143, 126, 158, 0)
-      );
-      transform: translateZ(-1px);
-      filter: blur(18px);
-      opacity: 0.75;
-    }
-
-    .native-sheet {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      border-radius: 18px;
-      overflow: hidden;
-      background: linear-gradient(160deg, #fdfbf7 0%, #f4f0ea 100%);
-      box-shadow: 0 28px 50px rgba(110, 98, 132, 0.18);
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-      pointer-events: none;
-    }
-
-    .native-sheet img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #fdfbf7;
-    }
-
-    .native-sheet__shine {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        115deg,
-        rgba(255, 255, 255, 0.38) 0%,
-        rgba(255, 255, 255, 0) 42%,
-        rgba(120, 110, 143, 0.08) 100%
-      );
-      mix-blend-mode: screen;
-      pointer-events: none;
-    }
-
-    .native-sheet--standby {
-      opacity: 0;
-    }
-
-    .native-sheet--current {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .native-sheet--flip-forward,
-    .native-sheet--reveal-forward {
-      transform-origin: left center;
-      animation-duration: 0.85s;
-      animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
-      animation-fill-mode: forwards;
-    }
-
-    .native-sheet--flip-backward,
-    .native-sheet--reveal-backward {
-      transform-origin: right center;
-      animation-duration: 0.85s;
-      animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
-      animation-fill-mode: forwards;
-    }
-
-    .native-sheet--flip-forward {
-      animation-name: nativeFlipForward;
-      z-index: 3;
-    }
-
-    .native-sheet--reveal-forward {
-      animation-name: nativeRevealForward;
-      z-index: 2;
-    }
-
-    .native-sheet--flip-backward {
-      animation-name: nativeFlipBackward;
-      z-index: 3;
-    }
-
-    .native-sheet--reveal-backward {
-      animation-name: nativeRevealBackward;
-      z-index: 2;
-    }
-
-    @keyframes nativeFlipForward {
-      0% {
-        transform: rotateY(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: rotateY(-180deg);
-        opacity: 0.2;
-      }
-    }
-
-    @keyframes nativeRevealForward {
-      0% {
-        transform: rotateY(180deg);
-        opacity: 0.1;
-      }
-      100% {
-        transform: rotateY(0deg);
-        opacity: 1;
-      }
-    }
-
-    @keyframes nativeFlipBackward {
-      0% {
-        transform: rotateY(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: rotateY(180deg);
-        opacity: 0.2;
-      }
-    }
-
-    @keyframes nativeRevealBackward {
-      0% {
-        transform: rotateY(-180deg);
-        opacity: 0.1;
-      }
-      100% {
-        transform: rotateY(0deg);
-        opacity: 1;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .native-sheet--flip-forward,
-      .native-sheet--reveal-forward,
-      .native-sheet--flip-backward,
-      .native-sheet--reveal-backward {
-        animation-duration: 0.01ms !important;
-      }
-    }
-
-    .page {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fdfbf7;
-    }
-
-    .page img,
-    .page iframe,
-    .page svg {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    .viewer-toolbar {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      width: 100%;
-      max-width: 520px;
-      margin: -8px auto 0;
-      z-index: 2;
-    }
-
-    .viewer-toolbar__nav {
-      display: inline-flex;
-      align-items: center;
       gap: 12px;
-      padding: 8px 20px;
+      align-items: center;
+      grid-template-columns: auto 1fr auto;
+      padding: 14px 20px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(182, 164, 198, 0.32);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 18px 36px rgba(73, 63, 92, 0.18);
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(170, 156, 187, 0.25);
+      box-shadow: 0 18px 36px rgba(78, 66, 94, 0.18);
+      backdrop-filter: blur(10px);
     }
 
-    .viewer-button {
-      appearance: none;
+    .toolbar button {
       border: none;
+      background: rgba(220, 209, 232, 0.7);
+      color: var(--ink);
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(201, 188, 214, 0.35), rgba(204, 221, 229, 0.4));
-      color: var(--text-primary);
-      font-size: 1.35rem;
-      line-height: 1;
-      cursor: pointer;
+      font-size: 1.2rem;
       display: grid;
       place-items: center;
-      transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 18px rgba(120, 110, 143, 0.18);
+      cursor: pointer;
+      transition: transform 150ms ease, background 150ms ease;
     }
 
-    .viewer-button:hover,
-    .viewer-button:focus-visible {
-      outline: none;
+    .toolbar button:hover,
+    .toolbar button:focus-visible {
       transform: translateY(-1px);
-      background: linear-gradient(135deg, rgba(201, 188, 214, 0.5), rgba(204, 221, 229, 0.52));
+      background: rgba(211, 197, 228, 0.9);
+      outline: none;
     }
 
-    .viewer-button:active {
-      transform: translateY(0);
-    }
-
-    .page-indicator {
-      margin: 0;
-      font-size: 0.75rem;
-      letter-spacing: 0.16em;
+    .toolbar .page-label {
+      text-align: center;
       text-transform: uppercase;
-      color: rgba(47, 37, 56, 0.64);
+      letter-spacing: 0.2em;
+      font-size: 0.68rem;
+      color: rgba(31, 26, 40, 0.6);
+    }
+
+    .page-title {
+      text-align: center;
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .scrub {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(170, 156, 187, 0.2);
+    }
+
+    .scrub input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent-strong);
+    }
+
+    .scrub .count {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(31, 26, 40, 0.6);
       white-space: nowrap;
     }
 
-    .sound-toggle {
-      border: none;
-      border-radius: 999px;
-      padding: 0.45rem 1.1rem;
-      background: rgba(255, 255, 255, 0.72);
-      color: var(--text-primary);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-size: 0.68rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 24px rgba(110, 98, 132, 0.16);
-      position: relative;
-      padding-right: 2.4rem;
-    }
-
-    .sound-toggle::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 0.9rem;
-      transform: translateY(-50%);
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(47, 37, 56, 0.32);
-      transition: background 160ms ease;
-    }
-
-    .sound-toggle:hover,
-    .sound-toggle:focus-visible {
-      background: rgba(255, 255, 255, 0.85);
-      transform: translateY(-1px);
-      outline: none;
-    }
-
-    .sound-toggle[data-state="on"]::after {
-      background: linear-gradient(135deg, rgba(173, 196, 207, 0.65), rgba(194, 180, 210, 0.65));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 24px rgba(110, 98, 132, 0.22);
-    }
-
-    .sound-toggle[data-state="off"]::after {
-      background: rgba(47, 37, 56, 0.28);
-    }
-
-    @media (max-width: 1024px) {
+    @media (max-width: 960px) {
       main {
         grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
         justify-items: center;
-        text-align: center;
+        gap: 10px;
       }
 
-      .intro {
-        align-items: center;
-        text-align: center;
-      }
-
-      .intro::after {
-        margin: 0 auto;
-      }
-    }
-
-    @media (max-width: 840px) {
-      .book-frame {
-        border-radius: 32px;
-      }
-
-      .viewer-toolbar__nav {
-        box-shadow: 0 12px 26px rgba(73, 63, 92, 0.2);
-      }
-    }
-
-    .page {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fdfbf7;
-    }
-
-    .page img,
-    .page iframe,
-    .page svg {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .particle-layer {
-        display: none;
+      .toolbar button {
+        width: 36px;
+        height: 36px;
       }
     }
 
     @media (max-width: 720px) {
-      body {
-        align-items: flex-start;
-      }
-
-      .page-shell {
-        width: 100%;
-        padding: clamp(24px, 6vw, 40px) clamp(16px, 6vw, 32px) clamp(40px, 10vw, 64px);
-      }
-
-      main {
-        width: 100%;
-      }
-
-      .viewer {
-        padding: 24px 12px 32px;
-      }
-
-      .viewer::before,
-      .viewer::after {
-        border-radius: 42px;
-      }
-
-      .book-frame {
-        padding: clamp(20px, 5vw, 26px);
-        border-radius: 30px;
+      .shell {
+        padding: 32px 22px 48px;
       }
 
       #book {
-        height: min(62vh, 520px);
+        height: min(65vh, 520px);
       }
 
-      .viewer-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        max-width: none;
-        margin-top: 8px;
-      }
-
-      .viewer-toolbar__nav {
-        width: 100%;
-        justify-content: space-between;
-        padding: 10px 20px;
-      }
-
-      .viewer-button {
-        width: 36px;
-        height: 36px;
-        font-size: 1.2rem;
-      }
-
-      .page-indicator {
-        text-align: center;
-        width: 100%;
-      }
-
-      .sound-toggle {
-        align-self: center;
-        padding: 0.5rem 1.4rem 0.5rem 1.1rem;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .page-shell {
-        padding: 32px 24px 48px;
-      }
-
-      #book {
-        height: min(64vh, 500px);
+      .toolbar {
+        border-radius: 24px;
+        padding: 12px 16px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <div class="particle-layer" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="shell">
+    <header>
+      <div class="identity">
+        <h1>Epistellaire</h1>
+        <p>Un livre numérique pensé comme un écrin. Chaque page révèle une fragment d'univers, à feuilleter avec douceur avant l'aboutissement de l'œuvre finale.</p>
+      </div>
+      <div class="meta">
+        <span>Atelier numérique</span>
+        <span>Œuvre en cours</span>
+      </div>
+    </header>
 
     <main>
-      <section class="intro">
-        <h1>Epistellaire</h1>
-        <p>Feuilletez le carnet vivant en toute clarté.</p>
-      </section>
-
-      <section class="viewer" aria-label="Visionneuse du livre">
-        <div class="book-frame">
-          <div id="book" aria-live="polite" aria-label="Livre d’artiste"></div>
+      <aside class="aside">
+        <div class="aside-card">
+          <h2>Intention</h2>
+          <p>Mettre en valeur la matière, les traits et les silences. Naviguez librement entre les pages pour saisir la progression artistique.</p>
         </div>
-        <div class="viewer-toolbar" role="toolbar" aria-label="Contrôles du livre">
-          <div class="viewer-toolbar__nav" role="group" aria-label="Navigation entre les pages">
-            <button type="button" class="viewer-button" data-action="prev" aria-label="Page précédente">‹</button>
-            <p class="page-indicator" id="pageIndicator">Préparation du livre…</p>
-            <button type="button" class="viewer-button" data-action="next" aria-label="Page suivante">›</button>
+        <div class="aside-card">
+          <h2>Navigation</h2>
+          <p>Cliquez sur les bords du livre, utilisez les flèches ou glissez le curseur pour atteindre une page précise.</p>
+        </div>
+      </aside>
+
+      <section class="viewer" aria-label="Livre numérique">
+        <div class="book-wrapper">
+          <div id="book" aria-live="polite"></div>
+        </div>
+        <div class="toolbar" role="toolbar" aria-label="Contrôles du livre">
+          <button type="button" data-action="prev" aria-label="Page précédente">‹</button>
+          <div>
+            <div class="page-label" id="pageIndicator">Chargement des pages…</div>
+            <div class="page-title" id="pageTitle">&nbsp;</div>
           </div>
-          <button type="button" class="sound-toggle" data-sound-toggle data-state="off" aria-pressed="false" aria-label="Activer le son d’ambiance">Son</button>
+          <button type="button" data-action="next" aria-label="Page suivante">›</button>
+        </div>
+        <div class="scrub" aria-label="Navigation rapide">
+          <span class="count" id="scrubCount">Page 1</span>
+          <input type="range" min="1" max="1" value="1" step="1" id="pageScrubber" aria-label="Aller à la page" />
+          <span class="count" id="totalCount">/ 1</span>
         </div>
       </section>
     </main>
-
   </div>
 
   <script type="application/json" id="pagesData">
@@ -751,755 +319,141 @@
       },
       {
         "src": "assets/pages/002.jpg",
-        "title": "Jour 1"
+        "title": "Récit 01"
       },
       {
-        "src": "assets/pages/003.svg",
-        "title": "Jour 2"
+        "src": "assets/pages/003.jpg",
+        "title": "Récit 02"
+      },
+      {
+        "src": "assets/pages/004.jpg",
+        "title": "Récit 03"
+      },
+      {
+        "src": "assets/pages/005.jpg",
+        "title": "Récit 04"
       }
     ]
   </script>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/turn.js@4/turn.min.js"></script>
   <script src="https://unpkg.com/page-flip/dist/js/page-flip.browser.min.js"></script>
   <script>
     (function () {
       const bookEl = document.getElementById('book');
       const pageIndicator = document.getElementById('pageIndicator');
-      const soundToggle = document.querySelector('[data-sound-toggle]');
-      const particleLayer = document.querySelector('.particle-layer');
-      const qs = new URLSearchParams(location.search);
-      const startAtLast = qs.get('last') !== '0';
-
-      const motionQuery =
-        typeof window.matchMedia === 'function'
-          ? window.matchMedia('(prefers-reduced-motion: reduce)')
-          : null;
-      let isReducedMotion = motionQuery?.matches ?? false;
-
-      const spawnParticles = () => {
-        if (!particleLayer || isReducedMotion) return;
-        particleLayer.innerHTML = '';
-        const baseCount = window.innerWidth < 640 ? 28 : window.innerWidth < 1024 ? 40 : 56;
-        for (let i = 0; i < baseCount; i++) {
-          const node = document.createElement('span');
-          node.className = 'particle';
-          const size = (Math.random() * 3 + 1.5).toFixed(2);
-          node.style.setProperty('--size', `${size}px`);
-          node.style.left = `${(Math.random() * 100).toFixed(2)}%`;
-          node.style.setProperty('--duration', `${(Math.random() * 10 + 12).toFixed(2)}s`);
-          node.style.setProperty('--delay', `${(-Math.random() * 20).toFixed(2)}s`);
-          particleLayer.appendChild(node);
-        }
-      };
-
-      motionQuery?.addEventListener?.('change', (event) => {
-        isReducedMotion = event.matches;
-        if (isReducedMotion) {
-          particleLayer?.replaceChildren?.();
-        } else {
-          spawnParticles();
-        }
-      });
-
-      let resizeTimeout;
-      addEventListener('resize', () => {
-        if (!particleLayer || isReducedMotion) return;
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(spawnParticles, 240);
-      });
-
-      const ambientSound = (() => {
-        let context;
-        let gainNode;
-        let source;
-        let active = false;
-
-        const buildTextureBuffer = (ctx) => {
-          const bufferSize = 2 * ctx.sampleRate;
-          const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-          const data = buffer.getChannelData(0);
-          let lastOut = 0;
-          for (let i = 0; i < bufferSize; i += 1) {
-            const white = Math.random() * 2 - 1;
-            lastOut = (lastOut + 0.02 * white) / 1.02;
-            data[i] = lastOut * 0.55;
-          }
-          return buffer;
-        };
-
-        const start = () => {
-          if (active) return true;
-          const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContextCtor) {
-            console.warn("L'API Web Audio n'est pas disponible sur ce navigateur.");
-            return false;
-          }
-
-          try {
-            context = new AudioContextCtor();
-            const buffer = buildTextureBuffer(context);
-            source = context.createBufferSource();
-            source.buffer = buffer;
-            source.loop = true;
-            gainNode = context.createGain();
-            gainNode.gain.setValueAtTime(0, context.currentTime);
-            source.connect(gainNode);
-            gainNode.connect(context.destination);
-            source.start();
-            gainNode.gain.linearRampToValueAtTime(0.08, context.currentTime + 1.6);
-            active = true;
-            return true;
-          } catch (error) {
-            console.warn("Impossible d’activer l’ambiance sonore.", error);
-            context = undefined;
-            gainNode = undefined;
-            source = undefined;
-            active = false;
-            return false;
-          }
-        };
-
-        const stop = () => {
-          if (!active) return false;
-          active = false;
-          if (context && gainNode) {
-            try {
-              gainNode.gain.cancelScheduledValues(context.currentTime);
-              gainNode.gain.linearRampToValueAtTime(0, context.currentTime + 0.6);
-            } catch (error) {
-              console.warn('Impossible de lisser le volume lors de la coupure.', error);
-            }
-          }
-
-          const finalize = () => {
-            try {
-              source?.stop?.();
-            } catch (error) {
-              console.warn('Interruption de la source audio.', error);
-            }
-            if (context) {
-              context.close().catch(() => {});
-            }
-            context = undefined;
-            gainNode = undefined;
-            source = undefined;
-          };
-
-          setTimeout(finalize, 650);
-          return false;
-        };
-
-        const toggle = () => {
-          if (active) {
-            return stop();
-          }
-          return start();
-        };
-
-        const isActive = () => active;
-
-        return { start, stop, toggle, isActive };
-      })();
-
-      const updateSoundToggle = () => {
-        if (!soundToggle) return;
-        const active = ambientSound.isActive();
-        soundToggle.setAttribute('aria-pressed', active ? 'true' : 'false');
-        soundToggle.dataset.state = active ? 'on' : 'off';
-        soundToggle.setAttribute('aria-label', active ? 'Couper le son d’ambiance' : 'Activer le son d’ambiance');
-        soundToggle.textContent = 'Son';
-      };
-
-      const attemptAutoAmbient = () => {
-        if (ambientSound.isActive()) return;
-        const started = ambientSound.start();
-        if (started) {
-          updateSoundToggle();
-        }
-      };
-
-      soundToggle?.addEventListener('click', (event) => {
-        event.stopPropagation();
-        ambientSound.toggle();
-        updateSoundToggle();
-      });
-
-      let resumeOnVisible = false;
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          resumeOnVisible = ambientSound.isActive();
-          if (resumeOnVisible) {
-            ambientSound.stop();
-            updateSoundToggle();
-          }
-        } else if (resumeOnVisible) {
-          attemptAutoAmbient();
-          resumeOnVisible = false;
-        }
-      });
-
-      const handleFirstInteraction = () => {
-        attemptAutoAmbient();
-        updateSoundToggle();
-      };
-
-      document.addEventListener(
-        'pointerdown',
-        () => {
-          handleFirstInteraction();
-        },
-        { once: true },
-      );
-
-      addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-          handleFirstInteraction();
-        }
-      });
-
-      spawnParticles();
-      updateSoundToggle();
+      const pageTitle = document.getElementById('pageTitle');
+      const pageScrubber = document.getElementById('pageScrubber');
+      const scrubCount = document.getElementById('scrubCount');
+      const totalCount = document.getElementById('totalCount');
 
       const inlinePages = (() => {
-        const el = document.getElementById('pagesData');
-        if (!el) return null;
+        const dataEl = document.getElementById('pagesData');
+        if (!dataEl) return [];
         try {
-          return JSON.parse(el.textContent);
+          return JSON.parse(dataEl.textContent);
         } catch (error) {
           console.warn('Impossible de lire les pages intégrées.', error);
-          return null;
+          return [];
         }
       })();
 
-      const loadPages = () => {
-        if (location.protocol === 'file:' && inlinePages) {
-          return Promise.resolve(inlinePages);
+      const loadPages = async () => {
+        if (location.protocol === 'file:' && inlinePages.length) {
+          return inlinePages;
         }
 
-        return fetch('pages.json', { cache: 'no-store' })
-          .then((r) => {
-            if (!r.ok) {
-              throw new Error(`Réponse inattendue du manifest (${r.status})`);
-            }
-            return r.json();
-          })
-          .catch((err) => {
-            if (inlinePages && inlinePages.length) {
-              console.warn(
-                'Utilisation des pages intégrées faute de chargement du manifest distant.',
-                err,
-              );
-              return inlinePages;
-            }
-            throw err;
-          });
+        try {
+          const response = await fetch('pages.json', { cache: 'no-store' });
+          if (!response.ok) {
+            throw new Error(`Réponse inattendue (${response.status})`);
+          }
+          return await response.json();
+        } catch (error) {
+          if (inlinePages.length) {
+            console.warn('Utilisation des pages intégrées.', error);
+            return inlinePages;
+          }
+          throw error;
+        }
       };
 
-      const updateIndicator = (current, total, title) => {
-        const label = title ? ` — ${title}` : '';
-        pageIndicator.textContent = `Page ${current} / ${total}${label}`;
+      const updateIndicators = (current, total, title) => {
+        pageIndicator.textContent = `Page ${current} / ${total}`;
+        pageTitle.textContent = title || 'Sans titre';
+        scrubCount.textContent = `Page ${current}`;
+        totalCount.textContent = `/ ${total}`;
+        pageScrubber.value = `${current}`;
+      };
+
+      const createPages = (pages) => {
+        const container = document.createElement('div');
+        pages.forEach((page) => {
+          const sheet = document.createElement('div');
+          sheet.className = 'page';
+          const img = document.createElement('img');
+          img.src = page.src;
+          img.alt = page.title || '';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          sheet.appendChild(img);
+          container.appendChild(sheet);
+        });
+        return container.children;
+      };
+
+      const initBook = (pages) => {
+        if (!pages.length) {
+          pageIndicator.textContent = 'Pages indisponibles.';
+          return;
+        }
+
+        const book = new window.PageFlip(bookEl, {
+          width: 640,
+          height: 820,
+          size: 'stretch',
+          showCover: true,
+          maxShadowOpacity: 0.3,
+          mobileScrollSupport: true,
+        });
+
+        book.loadFromHTML(createPages(pages));
+
+        const total = book.getPageCount();
+        pageScrubber.max = `${total}`;
+
+        const updateFromIndex = (index) => {
+          const safeIndex = Math.max(0, Math.min(total - 1, index));
+          const meta = pages[safeIndex] || {};
+          updateIndicators(safeIndex + 1, total, meta.title);
+        };
+
+        updateFromIndex(0);
+
+        book.on('flip', (event) => {
+          updateFromIndex(event.data);
+        });
+
+        document.querySelectorAll('[data-action]').forEach((button) => {
+          button.addEventListener('click', () => {
+            if (button.dataset.action === 'prev') {
+              book.flipPrev();
+            } else {
+              book.flipNext();
+            }
+          });
+        });
+
+        pageScrubber.addEventListener('input', (event) => {
+          const targetPage = Number(event.target.value) - 1;
+          book.flip(targetPage);
+        });
       };
 
       loadPages()
-        .then((pages) => {
-          if (!Array.isArray(pages) || pages.length === 0) {
-            throw new Error('Aucune page à afficher.');
-          }
-
-          const bindControls = (actions) => {
-            document.querySelectorAll('[data-action]').forEach((button) => {
-              const action = actions[button.dataset.action];
-              if (typeof action === 'function') {
-                button.addEventListener('click', action);
-              }
-            });
-          };
-
-          const bindKeyboard = (actions) => {
-            addEventListener('keydown', (e) => {
-              if (e.key === 'ArrowLeft') actions.prev?.();
-              if (e.key === 'ArrowRight') actions.next?.();
-              if (e.key === '+') actions.zoomIn?.();
-              if (e.key === '-' || e.key === '–') actions.zoomOut?.();
-            });
-          };
-
-          let preferredAspectRatio = 0.62;
-
-          const calibrateAspectRatio = (metaList, onUpdate) => {
-            const candidate = metaList.find((meta) => typeof meta?.src === 'string');
-            if (!candidate) {
-              return;
-            }
-
-            const probe = new Image();
-            probe.decoding = 'async';
-            probe.src = candidate.src;
-
-            const update = () => {
-              if (!probe.naturalWidth || !probe.naturalHeight) {
-                return;
-              }
-              const ratio = probe.naturalHeight / probe.naturalWidth;
-              if (!ratio || Number.isNaN(ratio)) {
-                return;
-              }
-              const clamped = Math.max(0.45, Math.min(1.1, Number(ratio.toFixed(3))));
-              if (Math.abs(clamped - preferredAspectRatio) > 0.01) {
-                preferredAspectRatio = clamped;
-                onUpdate?.();
-              }
-            };
-
-            if (probe.complete) {
-              update();
-            } else {
-              probe.addEventListener('load', update, { once: true });
-            }
-          };
-
-          const computeStageSize = () => {
-            const rect = bookEl.getBoundingClientRect();
-            const fallbackWidth = Math.min(window.innerWidth || 720, 720);
-            const containerWidth = rect.width || bookEl.clientWidth || fallbackWidth;
-            const width = Math.max(240, Math.min(960, Math.round(containerWidth)));
-            const targetHeight = Math.round(width * preferredAspectRatio);
-            const viewportLimit = Math.max(260, Math.round((window.innerHeight || targetHeight) * 0.82));
-            const height = Math.min(targetHeight, viewportLimit);
-            return { width, height };
-          };
-
-          const setupResizeListener = (callback) => {
-            let ticking = false;
-            const handler = () => {
-              if (ticking) return;
-              ticking = true;
-              requestAnimationFrame(() => {
-                ticking = false;
-                callback();
-              });
-            };
-            addEventListener('resize', handler);
-            return () => removeEventListener('resize', handler);
-          };
-
-          const setupWithTurnJs = () => {
-            const $ = window.jQuery;
-            if (!$ || typeof $.fn?.turn !== 'function') {
-              return false;
-            }
-
-            bookEl.innerHTML = '';
-
-            const viewport = document.createElement('div');
-            viewport.className = 'turnjs-viewport';
-            viewport.style.setProperty('--book-scale', '1');
-
-            const stage = document.createElement('div');
-            stage.className = 'turnjs-stage';
-            viewport.appendChild(stage);
-            bookEl.appendChild(viewport);
-
-            pages.forEach((meta) => {
-              const page = document.createElement('div');
-              page.className = 'turnjs-page page';
-              const img = document.createElement('img');
-              img.decoding = 'async';
-              img.loading = 'lazy';
-              img.draggable = false;
-              img.src = meta.src;
-              img.alt = meta.title || '';
-              page.appendChild(img);
-              stage.appendChild(page);
-            });
-
-            const initialSize = computeStageSize();
-            viewport.style.width = `${initialSize.width}px`;
-            viewport.style.height = `${initialSize.height}px`;
-
-            const $stage = $(stage);
-            $stage.turn({
-              width: initialSize.width,
-              height: initialSize.height,
-              display: 'single',
-              autoCenter: true,
-              duration: 1100,
-              gradients: true,
-              elevation: 70,
-            });
-
-            const applySize = () => {
-              const { width, height } = computeStageSize();
-              viewport.style.width = `${width}px`;
-              viewport.style.height = `${height}px`;
-              $stage.turn('size', width, height);
-            };
-
-            setupResizeListener(applySize);
-            calibrateAspectRatio(pages, applySize);
-
-            let currentScale = 1;
-            const applyScale = () => {
-              viewport.style.setProperty('--book-scale', currentScale.toFixed(3));
-            };
-            applyScale();
-
-            const syncIndicator = (pageNumber) => {
-              const safePage = Math.max(1, Math.min(pages.length, pageNumber));
-              const meta = pages[safePage - 1] || {};
-              updateIndicator(safePage, pages.length, meta.title);
-            };
-
-            $stage.on('turned', (_event, pageNumber) => {
-              syncIndicator(pageNumber);
-            });
-
-            const actions = {
-              first: () => $stage.turn('page', 1),
-              prev: () => $stage.turn('previous'),
-              next: () => $stage.turn('next'),
-              last: () => $stage.turn('page', pages.length),
-              zoomIn: () => {
-                currentScale = Math.min(currentScale + 0.12, 1.7);
-                applyScale();
-              },
-              zoomOut: () => {
-                currentScale = Math.max(currentScale - 0.12, 0.7);
-                applyScale();
-              },
-            };
-
-            viewport.addEventListener('click', (event) => {
-              const rect = viewport.getBoundingClientRect();
-              const isLeft = event.clientX - rect.left < rect.width / 2;
-              if (isLeft) {
-                actions.prev();
-              } else {
-                actions.next();
-              }
-            });
-
-            bindControls(actions);
-            bindKeyboard(actions);
-
-            requestAnimationFrame(() => {
-              const initialPage = startAtLast ? pages.length : 1;
-              $stage.turn('page', initialPage);
-              syncIndicator(initialPage);
-            });
-
-            return true;
-          };
-
-          const setupWithPageFlip = () => {
-            const baseSize = computeStageSize();
-            const book = new window.PageFlip(bookEl, {
-              width: baseSize.width,
-              height: baseSize.height,
-              size: 'stretch',
-              showCover: true,
-              useMouseEvents: true,
-              maxShadowOpacity: 0.18,
-              mobileScrollSupport: true,
-            });
-
-            const htmlContainer = document.createElement('div');
-
-            pages.forEach((p) => {
-              const el = document.createElement('div');
-              el.className = 'page';
-              const img = document.createElement('img');
-              img.src = p.src;
-              img.alt = p.title || '';
-              el.appendChild(img);
-              htmlContainer.appendChild(el);
-            });
-
-            book.loadFromHTML(htmlContainer.children);
-
-            let sizeMultiplier = 1;
-
-            const applySize = () => {
-              const { width, height } = computeStageSize();
-              const scaledWidth = Math.round(width * sizeMultiplier);
-              const scaledHeight = Math.round(height * sizeMultiplier);
-              book.update({ width: scaledWidth, height: scaledHeight });
-            };
-
-            applySize();
-            setupResizeListener(applySize);
-            calibrateAspectRatio(pages, applySize);
-
-            const actions = {
-              first: () => book.flip(0),
-              prev: () => book.flipPrev(),
-              next: () => book.flipNext(),
-              last: () => book.flip(book.getPageCount() - 1),
-              zoomIn: () => {
-                sizeMultiplier = Math.min(sizeMultiplier + 0.12, 1.7);
-                applySize();
-              },
-              zoomOut: () => {
-                sizeMultiplier = Math.max(sizeMultiplier - 0.12, 0.7);
-                applySize();
-              },
-            };
-
-            const getCurrentIndex = () => {
-              if (typeof book.getCurrentPageIndex === 'function') {
-                return book.getCurrentPageIndex();
-              }
-              if (typeof book.getCurrentPage === 'function') {
-                return book.getCurrentPage();
-              }
-              return 0;
-            };
-
-            const syncIndicator = (pageIndex) => {
-              const total = book.getPageCount();
-              if (!total) {
-                pageIndicator.textContent = 'Aucune page disponible pour le moment.';
-                return;
-              }
-              const safeIndex = Math.max(0, Math.min(total - 1, pageIndex));
-              const current = safeIndex + 1;
-              const meta = pages[safeIndex] || {};
-              updateIndicator(current, total, meta.title);
-            };
-
-            book.on('flip', (e) => {
-              syncIndicator(e.data);
-            });
-
-            bindControls(actions);
-            bindKeyboard(actions);
-
-            requestAnimationFrame(() => {
-              if (startAtLast) {
-                const lastIndex = Math.max(0, book.getPageCount() - 1);
-                book.flip(lastIndex);
-                syncIndicator(lastIndex);
-              } else {
-                syncIndicator(getCurrentIndex());
-              }
-            });
-          };
-
-          const setupFallback = () => {
-            console.warn(
-              'La bibliothèque PageFlip est indisponible. Activation du feuilletage natif.',
-            );
-            bookEl.innerHTML = '';
-
-            const clampIndex = (value) => Math.max(0, Math.min(pages.length - 1, value));
-
-            const viewport = document.createElement('div');
-            viewport.className = 'native-book-viewport';
-
-            const stage = document.createElement('div');
-            stage.className = 'native-book-stage';
-            stage.style.setProperty('--book-scale', '1');
-
-            const createSheet = (name) => {
-              const el = document.createElement('figure');
-              el.className = `native-sheet native-sheet--${name} native-sheet--standby`;
-              el.setAttribute('aria-hidden', 'true');
-
-              const img = document.createElement('img');
-              img.decoding = 'async';
-              img.loading = 'lazy';
-              el.appendChild(img);
-
-              const shine = document.createElement('div');
-              shine.className = 'native-sheet__shine';
-              el.appendChild(shine);
-
-              return { el, img };
-            };
-
-            let currentSheet = createSheet('current');
-            let standbySheet = createSheet('standby');
-
-            stage.append(currentSheet.el, standbySheet.el);
-            viewport.append(stage);
-            bookEl.appendChild(viewport);
-
-            const applyStageSize = () => {
-              const { width, height } = computeStageSize();
-              viewport.style.width = `${width}px`;
-              viewport.style.height = `${height}px`;
-              stage.style.width = `${width}px`;
-              stage.style.height = `${height}px`;
-            };
-
-            applyStageSize();
-            setupResizeListener(applyStageSize);
-            calibrateAspectRatio(pages, applyStageSize);
-
-            let currentIndex = clampIndex(startAtLast ? pages.length - 1 : 0);
-            let currentScale = 1;
-            let isFlipping = false;
-            const prefersReducedMotion = isReducedMotion;
-
-            const preloaded = new Set();
-
-            const preloadAround = (index) => {
-              [index - 1, index + 1].forEach((i) => {
-                const meta = pages[clampIndex(i)];
-                if (!meta || meta === pages[index] || preloaded.has(meta.src)) return;
-                preloaded.add(meta.src);
-                const img = new Image();
-                img.src = meta.src;
-              });
-            };
-
-            const updateSheet = (sheet, meta) => {
-              if (!meta) {
-                sheet.el.classList.add('native-sheet--standby');
-                sheet.el.classList.remove('native-sheet--current');
-                sheet.el.setAttribute('aria-hidden', 'true');
-                sheet.img.removeAttribute('src');
-                sheet.img.alt = '';
-                return;
-              }
-
-              sheet.el.classList.remove('native-sheet--standby');
-              sheet.el.classList.remove('native-sheet--current');
-              sheet.el.setAttribute('aria-hidden', 'false');
-              sheet.img.src = meta.src;
-              sheet.img.alt = meta.title || '';
-            };
-
-            const applyScale = () => {
-              stage.style.setProperty('--book-scale', currentScale.toFixed(3));
-            };
-
-            const syncState = () => {
-              const meta = pages[currentIndex];
-              updateSheet(currentSheet, meta);
-              currentSheet.el.classList.add('native-sheet--current');
-              currentSheet.el.setAttribute('aria-hidden', 'false');
-              updateSheet(standbySheet, null);
-              updateIndicator(currentIndex + 1, pages.length, meta?.title);
-              applyScale();
-              preloadAround(currentIndex);
-            };
-
-            const flipTo = (targetIndex) => {
-              const safeTarget = clampIndex(targetIndex);
-              if (safeTarget === currentIndex || isFlipping) {
-                return;
-              }
-
-              if (prefersReducedMotion) {
-                currentIndex = safeTarget;
-                syncState();
-                return;
-              }
-
-              const direction = safeTarget > currentIndex ? 'forward' : 'backward';
-              isFlipping = true;
-
-              const revealClass =
-                direction === 'forward'
-                  ? 'native-sheet--reveal-forward'
-                  : 'native-sheet--reveal-backward';
-              const flipClass =
-                direction === 'forward'
-                  ? 'native-sheet--flip-forward'
-                  : 'native-sheet--flip-backward';
-
-              updateSheet(standbySheet, pages[safeTarget]);
-              standbySheet.el.classList.remove('native-sheet--current');
-              standbySheet.el.classList.remove('native-sheet--standby');
-              standbySheet.el.classList.add(revealClass);
-
-              currentSheet.el.classList.remove('native-sheet--current');
-              currentSheet.el.classList.add(flipClass);
-
-              let finished = 0;
-              const handleAnimationEnd = (event) => {
-                if (event.target !== event.currentTarget) return;
-                finished += 1;
-                if (finished < 2) return;
-
-                currentSheet.el.classList.remove(flipClass);
-                currentSheet.el.classList.add('native-sheet--standby');
-                currentSheet.el.setAttribute('aria-hidden', 'true');
-
-                standbySheet.el.classList.remove(revealClass);
-                standbySheet.el.classList.add('native-sheet--current');
-
-                currentSheet.el.removeEventListener('animationend', handleAnimationEnd);
-                standbySheet.el.removeEventListener('animationend', handleAnimationEnd);
-
-                const temp = currentSheet;
-                currentSheet = standbySheet;
-                standbySheet = temp;
-
-                currentIndex = safeTarget;
-                updateIndicator(currentIndex + 1, pages.length, pages[currentIndex]?.title);
-                updateSheet(standbySheet, null);
-                preloadAround(currentIndex);
-
-                isFlipping = false;
-              };
-
-              currentSheet.el.addEventListener('animationend', handleAnimationEnd);
-              standbySheet.el.addEventListener('animationend', handleAnimationEnd);
-
-              // force reflow to allow animation to trigger consistently
-              void standbySheet.el.offsetWidth;
-            };
-
-            const actions = {
-              first: () => flipTo(0),
-              prev: () => flipTo(currentIndex - 1),
-              next: () => flipTo(currentIndex + 1),
-              last: () => flipTo(pages.length - 1),
-              zoomIn: () => {
-                currentScale = Math.min(currentScale + 0.12, 1.7);
-                applyScale();
-              },
-              zoomOut: () => {
-                currentScale = Math.max(currentScale - 0.12, 0.7);
-                applyScale();
-              },
-            };
-
-            stage.addEventListener('click', (event) => {
-              const rect = stage.getBoundingClientRect();
-              const isLeft = event.clientX - rect.left < rect.width / 2;
-              if (isLeft) {
-                actions.prev();
-              } else {
-                actions.next();
-              }
-            });
-
-            bindControls(actions);
-            bindKeyboard(actions);
-            syncState();
-          };
-
-          if (setupWithTurnJs()) {
-            return;
-          }
-
-          if (typeof window.PageFlip === 'function') {
-            setupWithPageFlip();
-            return;
-          }
-
-          setupFallback();
-        })
-        .catch((err) => {
-          pageIndicator.textContent = 'Les pages seront bientôt disponibles.';
-          bookEl.innerHTML =
-            '<p style="padding:1rem; text-align:center; color: rgba(47, 37, 56, 0.7)">La collection est en cours de préparation.</p>';
-          console.error(err);
+        .then(initBook)
+        .catch((error) => {
+          pageIndicator.textContent = 'Pages indisponibles.';
+          console.error(error);
         });
     })();
   </script>
