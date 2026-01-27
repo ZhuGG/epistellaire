@@ -156,6 +156,46 @@
       overflow: hidden;
       background: linear-gradient(160deg, #fffaf5 0%, #f4eee7 100%);
       box-shadow: 0 22px 60px rgba(66, 56, 84, 0.2);
+      perspective: 1800px;
+    }
+
+    .page {
+      background: linear-gradient(120deg, #fffdfa 0%, #f2ece4 100%);
+      border-radius: 12px;
+      box-shadow:
+        inset 0 0 0 1px rgba(210, 196, 214, 0.5),
+        inset 0 -18px 30px rgba(161, 144, 173, 0.18);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(38, 28, 48, 0.15), rgba(38, 28, 48, 0)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    .page::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset -12px 0 18px rgba(98, 79, 122, 0.12);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .page img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.98) contrast(1.02);
     }
 
     .toolbar {
@@ -411,8 +451,17 @@
           width: 640,
           height: 820,
           size: 'stretch',
+          minWidth: 320,
+          maxWidth: 920,
+          minHeight: 420,
+          maxHeight: 1200,
           showCover: true,
-          maxShadowOpacity: 0.3,
+          flippingTime: 900,
+          useMouseEvents: true,
+          drawShadow: true,
+          maxShadowOpacity: 0.7,
+          showPageCorners: true,
+          swipeDistance: 40,
           mobileScrollSupport: true,
         });
 
