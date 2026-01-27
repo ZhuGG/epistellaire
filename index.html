@@ -151,12 +151,27 @@
 
     #book {
       width: 100%;
-      height: min(70vh, 680px);
+      height: min(60vh, 520px);
+      aspect-ratio: 16 / 9;
       border-radius: 24px;
       overflow: hidden;
       background: linear-gradient(160deg, #fffaf5 0%, #f4eee7 100%);
       box-shadow: 0 22px 60px rgba(66, 56, 84, 0.2);
       perspective: 1800px;
+    }
+
+    #book.book-fallback {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 100%;
+      align-items: stretch;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+    }
+
+    #book.book-fallback .page {
+      scroll-snap-align: start;
     }
 
     .page {
@@ -196,6 +211,11 @@
       object-fit: cover;
       display: block;
       filter: saturate(0.98) contrast(1.02);
+    }
+
+    #book.book-fallback .page img {
+      object-fit: contain;
+      background: #f6f1ea;
     }
 
     .toolbar {
@@ -294,7 +314,7 @@
       }
 
       #book {
-        height: min(65vh, 520px);
+        height: min(58vh, 460px);
       }
 
       .toolbar {
@@ -385,6 +405,10 @@
       const pageScrubber = document.getElementById('pageScrubber');
       const scrubCount = document.getElementById('scrubCount');
       const totalCount = document.getElementById('totalCount');
+      const navButtons = Array.from(document.querySelectorAll('[data-action]'));
+      let fallbackActive = false;
+      let fallbackPages = [];
+      let bookInstance = null;
 
       const inlinePages = (() => {
         const dataEl = document.getElementById('pagesData');
@@ -441,20 +465,70 @@
         return container.children;
       };
 
+      const renderFallback = (pages) => {
+        bookEl.classList.add('book-fallback');
+        bookEl.innerHTML = '';
+        fallbackActive = true;
+        fallbackPages = pages;
+        const pageNodes = createPages(pages);
+        Array.from(pageNodes).forEach((page) => bookEl.appendChild(page));
+
+        const total = pages.length;
+        pageScrubber.max = `${total}`;
+        updateIndicators(1, total, pages[0]?.title);
+
+        pageScrubber.addEventListener('input', (event) => {
+          const targetPage = Math.max(0, Number(event.target.value) - 1);
+          bookEl.scrollTo({
+            left: bookEl.clientWidth * targetPage,
+            behavior: 'smooth',
+          });
+          updateIndicators(targetPage + 1, total, pages[targetPage]?.title);
+        });
+
+        const updateFromScroll = () => {
+          const index = Math.round(bookEl.scrollLeft / bookEl.clientWidth);
+          updateIndicators(index + 1, total, pages[index]?.title);
+          pageScrubber.value = `${index + 1}`;
+        };
+
+        bookEl.addEventListener('scroll', () => {
+          window.requestAnimationFrame(updateFromScroll);
+        });
+      };
+
+      const navigateFallback = (direction) => {
+        const total = fallbackPages.length;
+        if (!total) return;
+        const currentIndex = Math.round(bookEl.scrollLeft / bookEl.clientWidth);
+        const nextIndex = Math.max(0, Math.min(total - 1, currentIndex + direction));
+        bookEl.scrollTo({
+          left: bookEl.clientWidth * nextIndex,
+          behavior: 'smooth',
+        });
+        updateIndicators(nextIndex + 1, total, fallbackPages[nextIndex]?.title);
+        pageScrubber.value = `${nextIndex + 1}`;
+      };
+
       const initBook = (pages) => {
         if (!pages.length) {
           pageIndicator.textContent = 'Pages indisponibles.';
           return;
         }
 
+        if (!window.PageFlip) {
+          renderFallback(pages);
+          return;
+        }
+
         const book = new window.PageFlip(bookEl, {
-          width: 640,
-          height: 820,
+          width: 820,
+          height: 520,
           size: 'stretch',
-          minWidth: 320,
-          maxWidth: 920,
-          minHeight: 420,
-          maxHeight: 1200,
+          minWidth: 420,
+          maxWidth: 1100,
+          minHeight: 320,
+          maxHeight: 760,
           showCover: true,
           flippingTime: 900,
           useMouseEvents: true,
@@ -464,6 +538,7 @@
           swipeDistance: 40,
           mobileScrollSupport: true,
         });
+        bookInstance = book;
 
         book.loadFromHTML(createPages(pages));
 
@@ -482,21 +557,26 @@
           updateFromIndex(event.data);
         });
 
-        document.querySelectorAll('[data-action]').forEach((button) => {
-          button.addEventListener('click', () => {
-            if (button.dataset.action === 'prev') {
-              book.flipPrev();
-            } else {
-              book.flipNext();
-            }
-          });
-        });
-
         pageScrubber.addEventListener('input', (event) => {
           const targetPage = Number(event.target.value) - 1;
           book.flip(targetPage);
         });
       };
+
+      navButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          if (fallbackActive) {
+            navigateFallback(button.dataset.action === 'prev' ? -1 : 1);
+            return;
+          }
+          if (!bookInstance) return;
+          if (button.dataset.action === 'prev') {
+            bookInstance.flipPrev();
+          } else {
+            bookInstance.flipNext();
+          }
+        });
+      });
 
       loadPages()
         .then(initBook)
