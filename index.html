@@ -147,6 +147,19 @@
       background: linear-gradient(140deg, rgba(255, 255, 255, 0.85), rgba(234, 226, 239, 0.2));
       box-shadow: var(--shadow);
       border: 1px solid rgba(170, 156, 187, 0.25);
+      isolation: isolate;
+    }
+
+    .book-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border-radius: 22px;
+      background:
+        linear-gradient(90deg, rgba(77, 62, 102, 0.22), rgba(77, 62, 102, 0) 10%, rgba(77, 62, 102, 0) 90%, rgba(77, 62, 102, 0.22)),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0.05));
+      pointer-events: none;
+      z-index: 0;
     }
 
     #book {
@@ -158,6 +171,23 @@
       background: linear-gradient(160deg, #fffaf5 0%, #f4eee7 100%);
       box-shadow: 0 22px 60px rgba(66, 56, 84, 0.2);
       perspective: 1800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    #book::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 28px;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, rgba(53, 41, 69, 0.16), rgba(255, 255, 255, 0.08), rgba(53, 41, 69, 0.18));
+      filter: blur(0.5px);
+      pointer-events: none;
+      z-index: 5;
     }
 
     #book.book-fallback {
@@ -182,6 +212,13 @@
         inset 0 -18px 30px rgba(161, 144, 173, 0.18);
       overflow: hidden;
       position: relative;
+    }
+
+    .page.page--cover {
+      background: linear-gradient(140deg, #eee3d6 0%, #d5c5af 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(129, 104, 72, 0.45),
+        inset 0 -10px 26px rgba(94, 70, 42, 0.22);
     }
 
     .page::before {
@@ -454,6 +491,10 @@
         pages.forEach((page) => {
           const sheet = document.createElement('div');
           sheet.className = 'page';
+          if (page.isCover) {
+            sheet.classList.add('page--cover');
+            sheet.dataset.density = 'hard';
+          }
           const img = document.createElement('img');
           img.src = page.src;
           img.alt = page.title || '';
@@ -521,6 +562,11 @@
           return;
         }
 
+        const pagesWithCoverMeta = pages.map((page, index) => ({
+          ...page,
+          isCover: index === 0 || index === pages.length - 1,
+        }));
+
         const book = new window.PageFlip(bookEl, {
           width: 820,
           height: 520,
@@ -536,18 +582,19 @@
           maxShadowOpacity: 0.7,
           showPageCorners: true,
           swipeDistance: 40,
-          mobileScrollSupport: true,
+          mobileScrollSupport: false,
+          usePortrait: false,
         });
         bookInstance = book;
 
-        book.loadFromHTML(createPages(pages));
+        book.loadFromHTML(createPages(pagesWithCoverMeta));
 
         const total = book.getPageCount();
         pageScrubber.max = `${total}`;
 
         const updateFromIndex = (index) => {
           const safeIndex = Math.max(0, Math.min(total - 1, index));
-          const meta = pages[safeIndex] || {};
+          const meta = pagesWithCoverMeta[safeIndex] || {};
           updateIndicators(safeIndex + 1, total, meta.title);
         };
 
@@ -560,6 +607,15 @@
         pageScrubber.addEventListener('input', (event) => {
           const targetPage = Number(event.target.value) - 1;
           book.flip(targetPage);
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowLeft') {
+            book.flipPrev();
+          }
+          if (event.key === 'ArrowRight') {
+            book.flipNext();
+          }
         });
       };
 
