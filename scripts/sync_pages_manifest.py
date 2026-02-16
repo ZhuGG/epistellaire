@@ -12,6 +12,14 @@ ASSETS_DIR = ROOT / "assets" / "pages"
 PAGES_JSON = ROOT / "pages.json"
 INDEX_HTML = ROOT / "index.html"
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".svg", ".avif"}
+EXTENSION_PRIORITY = {
+    ".jpg": 0,
+    ".jpeg": 1,
+    ".png": 2,
+    ".webp": 3,
+    ".avif": 4,
+    ".svg": 5,
+}
 
 INLINE_START = "  <!-- PAGES_DATA_START -->"
 INLINE_END = "  <!-- PAGES_DATA_END -->"
@@ -29,7 +37,10 @@ def load_existing_titles() -> dict[str, str]:
     if not PAGES_JSON.exists():
         return {}
 
-    data = json.loads(PAGES_JSON.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(PAGES_JSON.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
     titles = {}
     for entry in data:
         src = entry.get("src")
@@ -56,7 +67,20 @@ def build_manifest() -> list[dict[str, str]]:
         for path in ASSETS_DIR.iterdir()
         if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
     ]
-    images.sort(key=sort_key)
+
+    deduplicated_by_stem: dict[str, Path] = {}
+    for image in images:
+        existing = deduplicated_by_stem.get(image.stem)
+        if not existing:
+            deduplicated_by_stem[image.stem] = image
+            continue
+
+        image_priority = EXTENSION_PRIORITY.get(image.suffix.lower(), 999)
+        existing_priority = EXTENSION_PRIORITY.get(existing.suffix.lower(), 999)
+        if image_priority < existing_priority:
+            deduplicated_by_stem[image.stem] = image
+
+    images = sorted(deduplicated_by_stem.values(), key=sort_key)
 
     manifest: list[dict[str, str]] = []
     for index, image in enumerate(images):
