@@ -20,6 +20,24 @@ Un mini-site **100% statique** prêt pour GitHub Pages, pour feuilleter un livre
       └─ 003.svg      # Exemples — remplacez par vos images (JPG/PNG/SVG)
 ```
 
+## 📦 Préparer l'upload de toute l'œuvre
+Pour publier **tous les dessins d'un coup** (et éviter d'éditer manuellement `pages.json`) :
+
+1. Déposez tous vos fichiers dans `assets/pages/` (`.jpg`, `.jpeg`, `.png`, `.webp`, `.svg`, `.avif`).
+2. Lancez la synchronisation :
+   ```bash
+   python3 scripts/sync_pages_manifest.py
+   ```
+3. Vérifiez `pages.json` puis commit/push.
+
+Le script :
+- parcourt automatiquement `assets/pages/` ;
+- trie les fichiers dans l'ordre naturel (`001`, `002`, `010`, etc.) ;
+- met à jour `pages.json` ;
+- aligne aussi les données embarquées dans `index.html` (fallback local).
+
+> Conseil : gardez une numérotation cohérente (`001`, `002`, …) pour refléter le parcours narratif.
+
 ## ✏️ Mise à jour quotidienne
 - Déposez l’image du jour dans `assets/pages/` (ex. `004.jpg`).
 - Ajoutez une ligne à `pages.json` :
