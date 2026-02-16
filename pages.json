@@ -12,7 +12,7 @@
     "title": "Récit 02"
   },
   {
-    "src": "assets/pages/003.svg",
+    "src": "assets/pages/003.jpg",
     "title": "003"
   },
   {
@@ -23,4 +23,21 @@
     "src": "assets/pages/005.jpg",
     "title": "Récit 04"
   }
-]
+,
+  {
+    "src": "assets/pages/006.jpg",
+    "title": "Récit 05"
+  }
+,
+  {
+    "src": "assets/pages/007.jpg",
+    "title": "Récit 06"
+  },
+  {
+    "src": "assets/pages/008.jpg",
+    "title": "Récit 07"
+  },
+  {
+    "src": "assets/pages/009.jpg",
+    "title": "Récit 05"
+  }
