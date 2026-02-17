@@ -46,11 +46,11 @@
     }
 
     .shell {
-      width: min(1200px, 100%);
-      padding: clamp(28px, 6vw, 72px);
+      width: min(1100px, 100%);
+      padding: clamp(20px, 4vw, 42px);
       display: flex;
       flex-direction: column;
-      gap: clamp(28px, 4vw, 56px);
+      gap: clamp(16px, 2.5vw, 28px);
       position: relative;
       z-index: 1;
     }
@@ -63,20 +63,20 @@
       flex-wrap: wrap;
     }
 
-    .identity { max-width: 480px; display: grid; gap: 12px; }
+    .identity { max-width: 660px; display: grid; gap: 8px; }
     .identity h1 {
       margin: 0;
       font-family: "Playfair Display", "Times New Roman", serif;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      font-size: clamp(2.4rem, 4vw, 3.5rem);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
     }
 
     .identity p {
       margin: 0;
-      font-size: clamp(1rem, 1.4vw, 1.2rem);
-      line-height: 1.7;
+      font-size: clamp(0.92rem, 1.1vw, 1rem);
+      line-height: 1.5;
       color: var(--ink-muted);
     }
 
@@ -84,56 +84,58 @@
       display: grid;
       gap: 8px;
       text-transform: uppercase;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       letter-spacing: 0.26em;
       color: rgba(31, 26, 40, 0.55);
     }
 
-    main {
-      display: grid;
-      grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
-      gap: clamp(28px, 6vw, 80px);
-      align-items: center;
+    main { display: block; }
+
+    .aside {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
-    .aside { display: grid; gap: 20px; }
-
     .aside-card {
-      padding: 20px 22px;
-      border-radius: 24px;
-      background: rgba(255, 255, 255, 0.75);
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.68);
       border: 1px solid rgba(170, 156, 187, 0.25);
-      box-shadow: 0 20px 40px rgba(86, 76, 102, 0.14);
+      box-shadow: 0 12px 30px rgba(86, 76, 102, 0.1);
       backdrop-filter: blur(12px);
     }
 
     .aside-card h2 {
-      margin: 0 0 8px;
-      font-size: 0.9rem;
-      letter-spacing: 0.18em;
+      margin: 0;
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
     .aside-card p {
-      margin: 0;
-      font-size: 0.95rem;
-      line-height: 1.6;
+      margin: 4px 0 0;
+      font-size: 0.78rem;
+      line-height: 1.3;
       color: var(--ink-muted);
     }
 
-    .viewer { display: grid; gap: 16px; }
+    .viewer { display: grid; gap: 12px; }
 
     .book-shell {
       position: relative;
-      border-radius: 34px;
-      padding: clamp(18px, 2.7vw, 30px);
-      background: linear-gradient(150deg, rgba(255, 255, 255, 0.9), rgba(222, 209, 234, 0.4));
+      border-radius: 38px;
+      padding: clamp(12px, 2vw, 20px);
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.92), rgba(222, 209, 234, 0.38));
       border: 1px solid rgba(170, 156, 187, 0.35);
-      box-shadow: var(--shadow);
+      box-shadow: 0 45px 100px rgba(60, 50, 78, 0.3), var(--shadow);
       transform-style: preserve-3d;
       perspective: 2400px;
       transition: transform 250ms ease, box-shadow 250ms ease;
       isolation: isolate;
+      width: min(100%, 920px);
+      margin: 0 auto;
     }
 
     .book-shell::after {
@@ -152,13 +154,27 @@
 
     .book-object {
       position: relative;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 16 / 10;
       width: 100%;
-      max-height: min(62vh, 560px);
+      max-height: min(74vh, 740px);
       border-radius: 22px;
       overflow: hidden;
       background: linear-gradient(160deg, #f7efe5 0%, #f2e9dd 100%);
-      box-shadow: inset 0 0 0 1px rgba(127, 106, 140, 0.25), inset 0 -32px 40px rgba(77, 54, 95, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(127, 106, 140, 0.25), inset 0 -32px 40px rgba(77, 54, 95, 0.12), 0 20px 50px rgba(50, 35, 64, 0.2);
+    }
+
+    .book-object::before {
+      content: "";
+      position: absolute;
+      top: 8%;
+      bottom: 8%;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(99, 73, 122, 0), rgba(99, 73, 122, 0.28), rgba(99, 73, 122, 0));
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.5;
     }
 
     .page-stack,
@@ -254,16 +270,22 @@
     }
 
     .toolbar {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      width: min(520px, calc(100% - 24px));
       display: grid;
       gap: 12px;
       align-items: center;
       grid-template-columns: auto 1fr auto;
-      padding: 14px 20px;
+      padding: 10px 14px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.88);
       border: 1px solid rgba(170, 156, 187, 0.25);
-      box-shadow: 0 18px 36px rgba(78, 66, 94, 0.18);
+      box-shadow: 0 14px 30px rgba(78, 66, 94, 0.22);
       backdrop-filter: blur(10px);
+      z-index: 8;
     }
 
     .toolbar button {
@@ -277,6 +299,11 @@
       display: grid;
       place-items: center;
       cursor: pointer;
+    }
+
+    .toolbar button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     .toolbar .page-label {
@@ -299,10 +326,12 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 16px;
+      padding: 8px 12px;
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.66);
       border: 1px solid rgba(170, 156, 187, 0.2);
+      width: min(620px, 100%);
+      margin: 0 auto;
     }
 
     .scrub input[type="range"] { flex: 1; accent-color: var(--accent-strong); }
@@ -315,9 +344,28 @@
       white-space: nowrap;
     }
 
+    .tap-zones {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      z-index: 7;
+    }
+
+    .tap-zone {
+      appearance: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .tap-zone:focus-visible {
+      outline: 2px solid rgba(154, 120, 181, 0.7);
+      outline-offset: -4px;
+    }
+
     @media (max-width: 960px) {
-      main { grid-template-columns: 1fr; }
-      .toolbar { grid-template-columns: 1fr; justify-items: center; }
+      .toolbar { width: calc(100% - 16px); }
     }
   </style>
 </head>
@@ -350,6 +398,10 @@
       <section class="viewer" aria-label="Livre numérique">
         <div class="book-shell" id="bookShell">
           <div class="book-object" id="bookObject">
+            <div class="tap-zones" aria-hidden="true">
+              <button class="tap-zone" type="button" data-action="prev" tabindex="-1"></button>
+              <button class="tap-zone" type="button" data-action="next" tabindex="-1"></button>
+            </div>
             <div class="page-stack">
               <div class="page-layer" id="basePageLayer">
                 <img id="basePageImage" alt="" />
@@ -362,15 +414,15 @@
               </div>
               <div class="page-depth" aria-hidden="true"></div>
             </div>
+            <div class="toolbar" role="toolbar" aria-label="Contrôles du livre">
+              <button type="button" data-action="prev" aria-label="Page précédente">‹</button>
+              <div>
+                <div class="page-label" id="pageIndicator">Chargement des pages…</div>
+                <div class="page-title" id="pageTitle">&nbsp;</div>
+              </div>
+              <button type="button" data-action="next" aria-label="Page suivante">›</button>
+            </div>
           </div>
-        </div>
-        <div class="toolbar" role="toolbar" aria-label="Contrôles du livre">
-          <button type="button" data-action="prev" aria-label="Page précédente">‹</button>
-          <div>
-            <div class="page-label" id="pageIndicator">Chargement des pages…</div>
-            <div class="page-title" id="pageTitle">&nbsp;</div>
-          </div>
-          <button type="button" data-action="next" aria-label="Page suivante">›</button>
         </div>
         <div class="scrub" aria-label="Navigation rapide">
           <span class="count" id="scrubCount">Page 1</span>
@@ -452,6 +504,10 @@
         scrubCount.textContent = `Page ${current}`;
         totalCount.textContent = `/ ${total}`;
         pageScrubber.value = String(current);
+        navButtons.forEach((button) => {
+          if (button.dataset.action === 'prev') button.disabled = currentIndex === 0;
+          if (button.dataset.action === 'next') button.disabled = currentIndex === pages.length - 1;
+        });
       };
 
       const setPageImage = (imgEl, page) => {
