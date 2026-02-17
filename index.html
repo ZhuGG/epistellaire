@@ -13,11 +13,7 @@
       color-scheme: only light;
       --ink: #1f1a28;
       --ink-muted: rgba(31, 26, 40, 0.65);
-      --paper: #f7f2ec;
-      --paper-soft: rgba(255, 255, 255, 0.9);
-      --accent: #c6a6cf;
       --accent-strong: #9a78b5;
-      --shadow: 0 30px 80px rgba(67, 56, 86, 0.24);
     }
 
     * { box-sizing: border-box; }
@@ -31,18 +27,7 @@
         radial-gradient(circle at 80% 0%, rgba(183, 207, 214, 0.35), transparent 40%),
         linear-gradient(120deg, #fbf8f4 0%, #f3ece4 48%, #f7f1ea 100%);
       display: flex;
-      align-items: stretch;
       justify-content: center;
-    }
-
-    .grain {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
-      mix-blend-mode: soft-light;
-      opacity: 0.6;
-      z-index: 0;
     }
 
     .shell {
@@ -50,23 +35,20 @@
       padding: clamp(20px, 4vw, 42px);
       display: flex;
       flex-direction: column;
-      gap: clamp(16px, 2.5vw, 28px);
-      position: relative;
-      z-index: 1;
+      gap: 20px;
     }
 
     header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 20px;
+      gap: 16px;
       flex-wrap: wrap;
     }
 
-    .identity { max-width: 660px; display: grid; gap: 8px; }
     .identity h1 {
       margin: 0;
-      font-family: "Playfair Display", "Times New Roman", serif;
+      font-family: "Playfair Display", serif;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -74,8 +56,8 @@
     }
 
     .identity p {
-      margin: 0;
-      font-size: clamp(0.92rem, 1.1vw, 1rem);
+      margin: 8px 0 0;
+      font-size: 0.95rem;
       line-height: 1.5;
       color: var(--ink-muted);
     }
@@ -89,186 +71,53 @@
       color: rgba(31, 26, 40, 0.55);
     }
 
-    main { display: block; }
-
-    .aside {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .aside-card {
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.68);
-      border: 1px solid rgba(170, 156, 187, 0.25);
-      box-shadow: 0 12px 30px rgba(86, 76, 102, 0.1);
-      backdrop-filter: blur(12px);
-    }
-
-    .aside-card h2 {
-      margin: 0;
-      font-size: 0.65rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .aside-card p {
-      margin: 4px 0 0;
-      font-size: 0.78rem;
-      line-height: 1.3;
-      color: var(--ink-muted);
-    }
-
     .viewer { display: grid; gap: 12px; }
 
-    .format-note {
-      margin: 0;
-      font-size: 0.78rem;
-      color: var(--ink-muted);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
     .book-shell {
-      position: relative;
-      border-radius: 38px;
+      border-radius: 32px;
       padding: clamp(12px, 2vw, 20px);
       background: linear-gradient(150deg, rgba(255, 255, 255, 0.92), rgba(222, 209, 234, 0.38));
       border: 1px solid rgba(170, 156, 187, 0.35);
-      box-shadow: 0 45px 100px rgba(60, 50, 78, 0.3), var(--shadow);
-      transform-style: preserve-3d;
-      perspective: 2400px;
-      transition: transform 250ms ease, box-shadow 250ms ease;
-      isolation: isolate;
+      box-shadow: 0 45px 100px rgba(60, 50, 78, 0.3);
       width: min(100%, 920px);
       margin: 0 auto;
     }
 
-    .book-shell::after {
-      content: "";
-      position: absolute;
-      left: 4%;
-      right: 4%;
-      bottom: -16px;
-      height: 30px;
-      background: radial-gradient(ellipse at center, rgba(45, 35, 56, 0.26), rgba(45, 35, 56, 0));
-      border-radius: 100%;
-      filter: blur(8px);
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .book-object {
+    .flipbook-viewport {
       position: relative;
-      aspect-ratio: 16 / 9;
       width: 100%;
+      aspect-ratio: 16 / 9;
       max-height: min(74vh, 740px);
       border-radius: 22px;
       overflow: hidden;
       background: linear-gradient(160deg, #f7efe5 0%, #f2e9dd 100%);
-      box-shadow: inset 0 0 0 1px rgba(127, 106, 140, 0.25), inset 0 -32px 40px rgba(77, 54, 95, 0.12), 0 20px 50px rgba(50, 35, 64, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(127, 106, 140, 0.25);
     }
 
-    .page-stack,
-    .page-depth,
-    .flip-sheet,
-    .page-layer {
-      position: absolute;
-      inset: 0;
-      border-radius: 16px;
+    #flipbook {
+      width: 100%;
+      height: 100%;
     }
 
-    .page-stack {
-      inset: 10px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(245, 236, 225, 0.96));
-      box-shadow: inset 0 0 0 1px rgba(154, 135, 167, 0.22), 0 24px 48px rgba(61, 47, 75, 0.18);
-      overflow: hidden;
-    }
-
-    .page-depth {
-      inset: 10px;
-      pointer-events: none;
-      background: linear-gradient(90deg, rgba(115, 88, 140, 0.14), transparent 8%, transparent 92%, rgba(115, 88, 140, 0.12));
-      z-index: 4;
-    }
-
-    .page-layer {
-      inset: 12px;
-      overflow: hidden;
+    .page-item {
       background: #f6f1ea;
-      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    .page-layer img,
-    .flip-sheet img {
+    .page-item img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      display: block;
       user-select: none;
       -webkit-user-drag: none;
-      background: #f6f1ea;
-    }
-
-    .flip-sheet {
-      inset: 12px;
-      transform-origin: right center;
-      transform-style: preserve-3d;
-      pointer-events: none;
-      z-index: 3;
-      opacity: 0;
-      background: #f6f1ea;
-      box-shadow: 18px 0 30px rgba(23, 14, 31, 0.22);
-    }
-
-    .flip-sheet::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(26, 16, 35, 0.02), rgba(26, 16, 35, 0.28));
-      opacity: 0;
-      transition: opacity 0.6s linear;
-      pointer-events: none;
-    }
-
-    .book-object.is-flipping-next .flip-sheet {
-      animation: flipNext 700ms cubic-bezier(0.2, 0.62, 0.25, 1) forwards;
-      opacity: 1;
-    }
-
-    .book-object.is-flipping-next .flip-sheet::before { opacity: 1; }
-
-    .book-object.is-flipping-prev .flip-sheet {
-      transform-origin: left center;
-      animation: flipPrev 700ms cubic-bezier(0.2, 0.62, 0.25, 1) forwards;
-      opacity: 1;
-    }
-
-    .book-object.is-flipping-prev .flip-sheet::before {
-      background: linear-gradient(90deg, rgba(26, 16, 35, 0.26), rgba(26, 16, 35, 0.02));
-      opacity: 1;
-    }
-
-    @keyframes flipNext {
-      0% { transform: rotateY(0deg); box-shadow: 18px 0 30px rgba(23, 14, 31, 0.22); }
-      45% { box-shadow: 6px 0 22px rgba(23, 14, 31, 0.32); }
-      100% { transform: rotateY(-178deg); box-shadow: -18px 0 20px rgba(23, 14, 31, 0.15); }
-    }
-
-    @keyframes flipPrev {
-      0% { transform: rotateY(178deg); box-shadow: -18px 0 30px rgba(23, 14, 31, 0.2); }
-      55% { box-shadow: -6px 0 20px rgba(23, 14, 31, 0.32); }
-      100% { transform: rotateY(0deg); box-shadow: 18px 0 24px rgba(23, 14, 31, 0.16); }
     }
 
     .toolbar {
-      position: absolute;
-      left: 50%;
-      bottom: 12px;
-      transform: translateX(-50%);
-      width: min(520px, calc(100% - 24px));
+      margin-top: 12px;
+      width: min(520px, 100%);
       display: grid;
       gap: 12px;
       align-items: center;
@@ -278,8 +127,7 @@
       background: rgba(255, 255, 255, 0.88);
       border: 1px solid rgba(170, 156, 187, 0.25);
       box-shadow: 0 14px 30px rgba(78, 66, 94, 0.22);
-      backdrop-filter: blur(10px);
-      z-index: 8;
+      margin-inline: auto;
     }
 
     .toolbar button {
@@ -290,31 +138,20 @@
       height: 40px;
       border-radius: 50%;
       font-size: 1.2rem;
-      display: grid;
-      place-items: center;
       cursor: pointer;
     }
 
-    .toolbar button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+    .toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .toolbar .page-label {
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      font-size: 0.68rem;
-      color: rgba(31, 26, 40, 0.6);
-    }
-
+    .page-label,
     .page-title {
       text-align: center;
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: 1.1rem;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
+
+    .page-label { font-size: 0.68rem; color: rgba(31, 26, 40, 0.6); }
+    .page-title { font-family: "Playfair Display", serif; font-size: 1.05rem; }
 
     .scrub {
       display: flex;
@@ -329,47 +166,15 @@
     }
 
     .scrub input[type="range"] { flex: 1; accent-color: var(--accent-strong); }
-
-    .scrub .count {
-      font-size: 0.75rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(31, 26, 40, 0.6);
-      white-space: nowrap;
-    }
-
-    .tap-zones {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      z-index: 7;
-    }
-
-    .tap-zone {
-      appearance: none;
-      border: none;
-      background: none;
-      cursor: pointer;
-    }
-
-    .tap-zone:focus-visible {
-      outline: 2px solid rgba(154, 120, 181, 0.7);
-      outline-offset: -4px;
-    }
-
-    @media (max-width: 960px) {
-      .toolbar { width: calc(100% - 16px); }
-    }
+    .scrub .count { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(31, 26, 40, 0.6); }
   </style>
 </head>
 <body>
-  <div class="grain" aria-hidden="true"></div>
   <div class="shell">
     <header>
       <div class="identity">
         <h1>Epistellaire</h1>
-        <p>Un livre numérique.lorem ipsum</p>
+        <p>Un livre numérique.</p>
       </div>
       <div class="meta">
         <span>Atelier numérique</span>
@@ -377,55 +182,28 @@
       </div>
     </header>
 
-    <main>
-      <aside class="aside">
-        <div class="aside-card">
-          <h2>Intention</h2>
-          <p>Naviguez librement entre les pages, un dessin à la fois.</p>
+    <section class="viewer" aria-label="Livre numérique">
+      <div class="book-shell">
+        <div class="flipbook-viewport">
+          <div id="flipbook"></div>
         </div>
-        <div class="aside-card">
-          <h2>Navigation</h2>
-          <p>Chaque œuvre est cadrée en format paysage (16:9) pour une lecture homogène.</p>
-        </div>
-      </aside>
+      </div>
 
-      <section class="viewer" aria-label="Livre numérique">
-        <p class="format-note">Mode galerie&nbsp;: un dessin à la fois · format paysage</p>
-        <div class="book-shell" id="bookShell">
-          <div class="book-object" id="bookObject">
-            <div class="tap-zones" aria-hidden="true">
-              <button class="tap-zone" type="button" data-action="prev" tabindex="-1"></button>
-              <button class="tap-zone" type="button" data-action="next" tabindex="-1"></button>
-            </div>
-            <div class="page-stack">
-              <div class="page-layer" id="basePageLayer">
-                <img id="basePageImage" alt="" />
-              </div>
-              <div class="page-layer" id="nextPageLayer" style="z-index:2; opacity:0;">
-                <img id="nextPageImage" alt="" />
-              </div>
-              <div class="flip-sheet" id="flipSheet">
-                <img id="flipImage" alt="" />
-              </div>
-              <div class="page-depth" aria-hidden="true"></div>
-            </div>
-            <div class="toolbar" role="toolbar" aria-label="Contrôles du livre">
-              <button type="button" data-action="prev" aria-label="Page précédente">‹</button>
-              <div>
-                <div class="page-label" id="pageIndicator">Chargement des pages…</div>
-                <div class="page-title" id="pageTitle">&nbsp;</div>
-              </div>
-              <button type="button" data-action="next" aria-label="Page suivante">›</button>
-            </div>
-          </div>
+      <div class="toolbar" role="toolbar" aria-label="Contrôles du livre">
+        <button type="button" data-action="prev" aria-label="Page précédente">‹</button>
+        <div>
+          <div class="page-label" id="pageIndicator">Chargement des pages…</div>
+          <div class="page-title" id="pageTitle">&nbsp;</div>
         </div>
-        <div class="scrub" aria-label="Navigation rapide">
-          <span class="count" id="scrubCount">Page 1</span>
-          <input type="range" min="1" max="1" value="1" step="1" id="pageScrubber" aria-label="Aller à la page" />
-          <span class="count" id="totalCount">/ 1</span>
-        </div>
-      </section>
-    </main>
+        <button type="button" data-action="next" aria-label="Page suivante">›</button>
+      </div>
+
+      <div class="scrub" aria-label="Navigation rapide">
+        <span class="count" id="scrubCount">Page 1</span>
+        <input type="range" min="1" max="1" value="1" step="1" id="pageScrubber" aria-label="Aller à la page" />
+        <span class="count" id="totalCount">/ 1</span>
+      </div>
+    </section>
   </div>
 
   <!-- PAGES_DATA_START -->
@@ -444,6 +222,7 @@
   </script>
   <!-- PAGES_DATA_END -->
 
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
   <script>
     (function () {
       const pageIndicator = document.getElementById('pageIndicator');
@@ -452,98 +231,60 @@
       const scrubCount = document.getElementById('scrubCount');
       const totalCount = document.getElementById('totalCount');
       const navButtons = Array.from(document.querySelectorAll('[data-action]'));
-      const bookShell = document.getElementById('bookShell');
-      const bookObject = document.getElementById('bookObject');
-
-      const basePageImage = document.getElementById('basePageImage');
-      const nextPageLayer = document.getElementById('nextPageLayer');
-      const nextPageImage = document.getElementById('nextPageImage');
-      const flipSheet = document.getElementById('flipSheet');
-      const flipImage = document.getElementById('flipImage');
+      const flipbookEl = document.getElementById('flipbook');
 
       let pages = [];
-      let currentIndex = 0;
-      let isAnimating = false;
+      let pageFlip;
 
       const inlinePages = (() => {
         const dataEl = document.getElementById('pagesData');
         if (!dataEl) return [];
         try {
           return JSON.parse(dataEl.textContent);
-        } catch (error) {
-          console.warn('Impossible de lire les pages intégrées.', error);
+        } catch {
           return [];
         }
       })();
 
       const loadPages = async () => {
-        if (location.protocol === 'file:' && inlinePages.length) {
-          return inlinePages;
-        }
+        if (location.protocol === 'file:' && inlinePages.length) return inlinePages;
         try {
           const response = await fetch('pages.json', { cache: 'no-store' });
           if (!response.ok) throw new Error(`Réponse inattendue (${response.status})`);
           return await response.json();
-        } catch (error) {
-          if (inlinePages.length) return inlinePages;
-          throw error;
+        } catch {
+          return inlinePages;
         }
       };
 
+      const currentIndex = () => pageFlip ? pageFlip.getCurrentPageIndex() : 0;
+
       const updateIndicators = () => {
-        const current = currentIndex + 1;
+        const index = currentIndex();
+        const current = index + 1;
         const total = pages.length;
-        const meta = pages[currentIndex] || {};
+        const meta = pages[index] || {};
+
         pageIndicator.textContent = `Page ${current} / ${total}`;
         pageTitle.textContent = meta.title || 'Sans titre';
         scrubCount.textContent = `Page ${current}`;
         totalCount.textContent = `/ ${total}`;
         pageScrubber.value = String(current);
+
         navButtons.forEach((button) => {
-          if (button.dataset.action === 'prev') button.disabled = currentIndex === 0;
-          if (button.dataset.action === 'next') button.disabled = currentIndex === pages.length - 1;
+          if (button.dataset.action === 'prev') button.disabled = index <= 0;
+          if (button.dataset.action === 'next') button.disabled = index >= total - 1;
         });
       };
 
-      const setPageImage = (imgEl, page) => {
-        imgEl.src = page.src;
-        imgEl.alt = page.title || '';
-      };
-
-      const showPage = (index) => {
-        currentIndex = index;
-        setPageImage(basePageImage, pages[currentIndex]);
-        nextPageLayer.style.opacity = '0';
-        updateIndicators();
-      };
-
-      const goTo = (targetIndex) => {
-        if (isAnimating || targetIndex === currentIndex || targetIndex < 0 || targetIndex >= pages.length) return;
-
-        const direction = targetIndex > currentIndex ? 'next' : 'prev';
-        isAnimating = true;
-
-        setPageImage(nextPageImage, pages[targetIndex]);
-        nextPageLayer.style.opacity = '1';
-
-        if (direction === 'next') {
-          setPageImage(flipImage, pages[currentIndex]);
-          flipSheet.style.transformOrigin = 'right center';
-          flipSheet.style.transform = 'rotateY(0deg)';
-          bookObject.classList.add('is-flipping-next');
-        } else {
-          setPageImage(flipImage, pages[targetIndex]);
-          flipSheet.style.transformOrigin = 'left center';
-          flipSheet.style.transform = 'rotateY(178deg)';
-          bookObject.classList.add('is-flipping-prev');
-        }
-
-        window.setTimeout(() => {
-          bookObject.classList.remove('is-flipping-next', 'is-flipping-prev');
-          showPage(targetIndex);
-          flipSheet.style.opacity = '0';
-          isAnimating = false;
-        }, 720);
+      const createPageNode = (page) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'page-item';
+        const img = document.createElement('img');
+        img.src = page.src;
+        img.alt = page.title || '';
+        wrapper.appendChild(img);
+        return wrapper;
       };
 
       const init = async () => {
@@ -554,35 +295,53 @@
         }
 
         pageScrubber.max = String(pages.length);
-        showPage(0);
+
+        if (!(window.St && window.St.PageFlip)) {
+          pageIndicator.textContent = '3dflipbook indisponible (CDN).';
+          return;
+        }
+
+        pageFlip = new window.St.PageFlip(flipbookEl, {
+          width: 1280,
+          height: 720,
+          size: 'stretch',
+          minWidth: 320,
+          maxWidth: 1600,
+          minHeight: 180,
+          maxHeight: 900,
+          maxShadowOpacity: 0.35,
+          showCover: true,
+          mobileScrollSupport: true,
+          usePortrait: true,
+          drawShadow: true,
+          flippingTime: 900
+        });
+
+        pageFlip.loadFromHTML(pages.map(createPageNode));
+        pageFlip.on('flip', updateIndicators);
 
         navButtons.forEach((button) => {
           button.addEventListener('click', () => {
-            if (button.dataset.action === 'prev') goTo(currentIndex - 1);
-            else goTo(currentIndex + 1);
+            if (!pageFlip) return;
+            if (button.dataset.action === 'prev') pageFlip.flipPrev('top');
+            else pageFlip.flipNext('top');
           });
         });
 
         pageScrubber.addEventListener('input', (event) => {
+          if (!pageFlip) return;
           const target = Number(event.target.value) - 1;
-          goTo(target);
+          pageFlip.turnToPage(target);
+          updateIndicators();
         });
 
         document.addEventListener('keydown', (event) => {
-          if (event.key === 'ArrowLeft') goTo(currentIndex - 1);
-          if (event.key === 'ArrowRight') goTo(currentIndex + 1);
+          if (!pageFlip) return;
+          if (event.key === 'ArrowLeft') pageFlip.flipPrev('top');
+          if (event.key === 'ArrowRight') pageFlip.flipNext('top');
         });
 
-        bookShell.addEventListener('pointermove', (event) => {
-          const rect = bookShell.getBoundingClientRect();
-          const nx = (event.clientX - rect.left) / rect.width - 0.5;
-          const ny = (event.clientY - rect.top) / rect.height - 0.5;
-          bookShell.style.transform = `translateY(-2px) rotateX(${(-ny * 1.4).toFixed(2)}deg) rotateY(${(nx * 1.8).toFixed(2)}deg)`;
-        });
-
-        bookShell.addEventListener('pointerleave', () => {
-          bookShell.style.transform = '';
-        });
+        updateIndicators();
       };
 
       init().catch((error) => {
