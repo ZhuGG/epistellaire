@@ -143,11 +143,19 @@
       position: relative;
       width: 100%;
       padding: clamp(16px, 3vw, 26px);
-      border-radius: 32px;
-      background: linear-gradient(140deg, rgba(255, 255, 255, 0.85), rgba(234, 226, 239, 0.2));
+      border-radius: 34px;
+      background: linear-gradient(140deg, rgba(255, 255, 255, 0.84), rgba(234, 226, 239, 0.22));
       box-shadow: var(--shadow);
       border: 1px solid rgba(170, 156, 187, 0.25);
       isolation: isolate;
+      transform-style: preserve-3d;
+      perspective: 2200px;
+      transition: transform 350ms ease, box-shadow 350ms ease;
+    }
+
+    .book-wrapper:hover {
+      transform: translateY(-3px) rotateX(1deg);
+      box-shadow: 0 36px 92px rgba(67, 56, 86, 0.26);
     }
 
     .book-wrapper::before {
@@ -162,6 +170,20 @@
       z-index: 0;
     }
 
+    .book-wrapper::after {
+      content: "";
+      position: absolute;
+      left: clamp(20px, 3vw, 28px);
+      right: clamp(20px, 3vw, 28px);
+      bottom: -16px;
+      height: 30px;
+      border-radius: 100%;
+      background: radial-gradient(ellipse at center, rgba(45, 35, 56, 0.26), rgba(45, 35, 56, 0));
+      filter: blur(8px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
     #book {
       width: 100%;
       height: min(60vh, 520px);
@@ -174,6 +196,7 @@
       margin: 0 auto;
       position: relative;
       z-index: 1;
+      transform-style: preserve-3d;
     }
 
     #book::before {
@@ -188,6 +211,53 @@
       filter: blur(0.5px);
       pointer-events: none;
       z-index: 5;
+    }
+
+    #book::after {
+      content: "";
+      position: absolute;
+      inset: 6px 6px 8px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0));
+      box-shadow: inset 0 -24px 28px rgba(70, 52, 87, 0.08);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .book-spine,
+    .book-edge {
+      position: absolute;
+      top: clamp(16px, 3vw, 26px);
+      bottom: clamp(16px, 3vw, 26px);
+      pointer-events: none;
+      border-radius: 999px;
+    }
+
+    .book-spine {
+      left: calc(50% - 12px);
+      width: 24px;
+      background: linear-gradient(90deg, rgba(59, 45, 74, 0.45), rgba(248, 241, 233, 0.2), rgba(59, 45, 74, 0.45));
+      z-index: 3;
+      filter: blur(0.15px);
+      opacity: 0.72;
+    }
+
+    .book-edge {
+      right: clamp(8px, 1.4vw, 16px);
+      width: 12px;
+      background:
+        repeating-linear-gradient(
+          180deg,
+          rgba(138, 116, 90, 0.26) 0 2px,
+          rgba(242, 232, 219, 0.94) 2px 5px
+        );
+      box-shadow: inset 0 0 0 1px rgba(146, 119, 90, 0.18);
+      opacity: 0.9;
+      z-index: 2;
+    }
+
+    .book-wrapper.is-flipping {
+      transform: translateY(-2px) rotateX(1.2deg) rotateY(-1deg);
     }
 
     #book.book-fallback {
@@ -212,6 +282,7 @@
         inset 0 -18px 30px rgba(161, 144, 173, 0.18);
       overflow: hidden;
       position: relative;
+      transform-origin: left center;
     }
 
     .page.page--cover {
@@ -228,7 +299,7 @@
       background:
         linear-gradient(90deg, rgba(38, 28, 48, 0.15), rgba(38, 28, 48, 0)),
         linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
-      opacity: 0.2;
+      opacity: 0.26;
       pointer-events: none;
     }
 
@@ -248,6 +319,11 @@
       object-fit: cover;
       display: block;
       filter: saturate(0.98) contrast(1.02);
+    }
+
+    .page img {
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     #book.book-fallback .page img {
@@ -389,6 +465,8 @@
 
       <section class="viewer" aria-label="Livre numérique">
         <div class="book-wrapper">
+          <span class="book-spine" aria-hidden="true"></span>
+          <span class="book-edge" aria-hidden="true"></span>
           <div id="book" aria-live="polite"></div>
         </div>
         <div class="toolbar" role="toolbar" aria-label="Contrôles du livre">
@@ -461,6 +539,7 @@
       const scrubCount = document.getElementById('scrubCount');
       const totalCount = document.getElementById('totalCount');
       const navButtons = Array.from(document.querySelectorAll('[data-action]'));
+      const bookWrapper = document.querySelector('.book-wrapper');
       let fallbackActive = false;
       let fallbackPages = [];
       let bookInstance = null;
@@ -620,6 +699,13 @@
 
         book.on('flip', (event) => {
           updateFromIndex(event.data);
+          if (bookWrapper) {
+            bookWrapper.classList.add('is-flipping');
+            window.clearTimeout(bookWrapper._flipTimer);
+            bookWrapper._flipTimer = window.setTimeout(() => {
+              bookWrapper.classList.remove('is-flipping');
+            }, 260);
+          }
         });
 
         pageScrubber.addEventListener('input', (event) => {
@@ -636,6 +722,20 @@
           }
         });
       };
+
+      if (bookWrapper) {
+        bookWrapper.addEventListener('pointermove', (event) => {
+          const rect = bookWrapper.getBoundingClientRect();
+          const nx = (event.clientX - rect.left) / rect.width - 0.5;
+          const ny = (event.clientY - rect.top) / rect.height - 0.5;
+          bookWrapper.style.transform = `translateY(-2px) rotateX(${(-ny * 1.6).toFixed(2)}deg) rotateY(${(nx * 2.1).toFixed(2)}deg)`;
+        });
+
+        bookWrapper.addEventListener('pointerleave', () => {
+          bookWrapper.style.transform = '';
+          bookWrapper.classList.remove('is-flipping');
+        });
+      }
 
       navButtons.forEach((button) => {
         button.addEventListener('click', () => {
