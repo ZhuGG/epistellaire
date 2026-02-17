@@ -123,6 +123,14 @@
 
     .viewer { display: grid; gap: 12px; }
 
+    .format-note {
+      margin: 0;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
     .book-shell {
       position: relative;
       border-radius: 38px;
@@ -154,27 +162,13 @@
 
     .book-object {
       position: relative;
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 16 / 9;
       width: 100%;
       max-height: min(74vh, 740px);
       border-radius: 22px;
       overflow: hidden;
       background: linear-gradient(160deg, #f7efe5 0%, #f2e9dd 100%);
       box-shadow: inset 0 0 0 1px rgba(127, 106, 140, 0.25), inset 0 -32px 40px rgba(77, 54, 95, 0.12), 0 20px 50px rgba(50, 35, 64, 0.2);
-    }
-
-    .book-object::before {
-      content: "";
-      position: absolute;
-      top: 8%;
-      bottom: 8%;
-      left: 50%;
-      width: 2px;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, rgba(99, 73, 122, 0), rgba(99, 73, 122, 0.28), rgba(99, 73, 122, 0));
-      z-index: 5;
-      pointer-events: none;
-      opacity: 0.5;
     }
 
     .page-stack,
@@ -387,15 +381,16 @@
       <aside class="aside">
         <div class="aside-card">
           <h2>Intention</h2>
-          <p>Naviguez librement entre les pages pour saisir la progression artistique.</p>
+          <p>Naviguez librement entre les pages, un dessin à la fois.</p>
         </div>
         <div class="aside-card">
           <h2>Navigation</h2>
-          <p>Chaque œuvre est affichée sur une page paysage complète, avec un feuilletage réaliste sans tranche au centre.</p>
+          <p>Chaque œuvre est cadrée en format paysage (16:9) pour une lecture homogène.</p>
         </div>
       </aside>
 
       <section class="viewer" aria-label="Livre numérique">
+        <p class="format-note">Mode galerie&nbsp;: un dessin à la fois · format paysage</p>
         <div class="book-shell" id="bookShell">
           <div class="book-object" id="bookObject">
             <div class="tap-zones" aria-hidden="true">
