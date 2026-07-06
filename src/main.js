@@ -1,3 +1,10 @@
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/cormorant-garamond/latin-700.css';
 import { PageFlip } from 'page-flip';
 import { createIcons, icons } from 'lucide';
 
@@ -14,6 +21,7 @@ const flipbookEl = document.getElementById('flipbook');
 const fallbackGallery = document.getElementById('fallbackGallery');
 const readerPanel = document.getElementById('readerPanel');
 const downloadLink = document.getElementById('downloadLink');
+const thumbnailRail = document.getElementById('thumbnailRail');
 
 let pages = [];
 let pageFlip;
@@ -77,6 +85,11 @@ const updateIndicators = () => {
     if (action === 'next' || action === 'last') button.disabled = index >= total - 1;
   });
 
+  thumbnailRail.querySelectorAll('.thumb-button').forEach((button, buttonIndex) => {
+    button.classList.toggle('is-active', buttonIndex === index);
+    button.setAttribute('aria-current', buttonIndex === index ? 'page' : 'false');
+  });
+
   preloadNear(index);
 };
 
@@ -103,6 +116,24 @@ const createFallback = () => {
   fallbackGallery.classList.add('is-visible');
 };
 
+const createThumbnails = () => {
+  thumbnailRail.replaceChildren();
+  pages.forEach((page, index) => {
+    const button = document.createElement('button');
+    button.className = 'thumb-button';
+    button.type = 'button';
+    button.setAttribute('aria-label', `Page ${index + 1}`);
+    button.addEventListener('click', () => turnTo(index));
+
+    const img = document.createElement('img');
+    img.src = page.src;
+    img.alt = '';
+    img.loading = 'lazy';
+    button.appendChild(img);
+    thumbnailRail.appendChild(button);
+  });
+};
+
 const turnTo = (index) => {
   const target = clampIndex(index);
   if (pageFlip) {
@@ -125,7 +156,7 @@ const initFlipbook = () => {
     minHeight: 220,
     maxHeight: 1100,
     maxShadowOpacity: 0.28,
-    showCover: true,
+    showCover: false,
     mobileScrollSupport: true,
     usePortrait: true,
     drawShadow: true,
@@ -174,6 +205,7 @@ const init = async () => {
   }
 
   pageScrubber.max = String(pages.length);
+  createThumbnails();
 
   try {
     initFlipbook();
