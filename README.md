@@ -9,7 +9,9 @@ Epistellaire est une galerie web pensee pour presenter une oeuvre illustree sous
 - Navigation premiere page, precedente, suivante, derniere page.
 - Curseur de progression, etat de page, plein ecran et telechargement de la planche courante.
 - Icones vectorielles via `lucide`.
+- Polices locales via `@fontsource/inter` et `@fontsource/cormorant-garamond`.
 - Build moderne avec `vite`, pret pour GitHub Pages.
+- Copie automatique de `assets/pages` et `pages.json` dans `dist`.
 - Apercu social base sur la couverture de l'oeuvre.
 
 ## Developpement
@@ -32,7 +34,6 @@ npm run preview
 .
 |-- index.html
 |-- package.json
-|-- vite.config.js
 |-- pages.json
 |-- src/
 |   `-- main.js
@@ -42,6 +43,7 @@ npm run preview
 |       |-- 002.jpg
 |       `-- ...
 `-- scripts/
+    |-- copy-static.mjs
     `-- sync_pages_manifest.py
 ```
 
