@@ -1,0 +1,19 @@
+{
+  "name": "epistellaire",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "sync:pages": "python scripts/sync_pages_manifest.py"
+  },
+  "dependencies": {
+    "lucide": "^0.468.0",
+    "page-flip": "^2.0.7"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}
