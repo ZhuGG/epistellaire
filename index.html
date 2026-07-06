@@ -3,160 +3,241 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Epistellaire — Galerie immersive</title>
-  <meta name="description" content="Entrez dans Epistellaire, une galerie immersive où chaque page du livre devient une constellation vivante." />
+  <title>Epistellaire - Galerie immersive</title>
+  <meta name="description" content="Epistellaire est une galerie immersive ou chaque page devient une constellation a feuilleter." />
+  <meta name="theme-color" content="#0a0a09" />
+  <meta property="og:title" content="Epistellaire - Galerie immersive" />
+  <meta property="og:description" content="Une experience de lecture artistique et immersive pour explorer les planches d'Epistellaire." />
+  <meta property="og:image" content="assets/pages/001.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-deep: #070912;
-      --bg-soft: #0f1527;
-      --ink: #f9f2e8;
-      --muted: rgba(239, 228, 212, 0.72);
-      --accent: #c59bff;
-      --accent-cyan: #7ee9ff;
-      --glass: rgba(20, 26, 44, 0.62);
-      --glass-border: rgba(208, 186, 255, 0.25);
-      --surface: rgba(12, 16, 30, 0.84);
-      --shadow: 0 30px 80px rgba(2, 4, 12, 0.68);
+      --bg: #0a0a09;
+      --ink: #fbf6ed;
+      --muted: rgba(251, 246, 237, 0.68);
+      --quiet: rgba(251, 246, 237, 0.46);
+      --line: rgba(251, 246, 237, 0.16);
+      --line-strong: rgba(251, 246, 237, 0.28);
+      --panel: rgba(14, 14, 13, 0.72);
+      --panel-strong: rgba(14, 14, 13, 0.9);
+      --paper: #f6ead9;
+      --ember: #d99a54;
+      --mineral: #6eb8a2;
+      --oxide: #a75f47;
+      --shadow: 0 24px 90px rgba(0, 0, 0, 0.62);
+      --radius: 8px;
+      color-scheme: dark;
     }
 
     * { box-sizing: border-box; }
 
+    html { min-height: 100%; }
+
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at 18% 16%, rgba(126, 233, 255, 0.18), transparent 40%),
-        radial-gradient(circle at 80% 12%, rgba(197, 155, 255, 0.25), transparent 42%),
-        radial-gradient(circle at 48% 82%, rgba(255, 179, 208, 0.17), transparent 46%),
-        linear-gradient(160deg, var(--bg-deep), var(--bg-soft));
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+        radial-gradient(circle at 50% 18%, rgba(251, 246, 237, 0.08), transparent 34%),
+        linear-gradient(180deg, #11110f, var(--bg) 44%, #070706);
+      background-size: 48px 48px, 48px 48px, auto, auto;
+      background-attachment: fixed;
+      letter-spacing: 0;
       overflow-x: hidden;
     }
 
-    body::before,
-    body::after {
-      content: "";
-      position: fixed;
-      pointer-events: none;
-      inset: 0;
-      z-index: -1;
+    button,
+    input {
+      font: inherit;
+      letter-spacing: 0;
     }
 
-    body::before {
-      background-image:
-        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.65) 0 1px, transparent 2px),
-        radial-gradient(circle at 68% 52%, rgba(255, 255, 255, 0.55) 0 1px, transparent 2px),
-        radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.45) 0 1px, transparent 2px),
-        radial-gradient(circle at 12% 70%, rgba(255, 255, 255, 0.5) 0 1px, transparent 2px);
-      background-size: 260px 260px, 320px 320px, 280px 280px, 300px 300px;
-      opacity: 0.35;
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
     }
 
-    body::after {
-      backdrop-filter: blur(0.7px);
-      background: linear-gradient(to bottom, rgba(6, 8, 16, 0.2), rgba(6, 8, 16, 0.65));
-    }
-
-    .stage {
-      width: min(1240px, 100%);
+    .topbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 22px 0;
+      width: min(1560px, 100%);
       margin: 0 auto;
-      padding: clamp(18px, 3vw, 40px);
+    }
+
+    .brand {
       display: grid;
-      gap: 16px;
+      gap: 2px;
+      min-width: 0;
     }
 
-    .masthead {
-      border: 1px solid var(--glass-border);
-      border-radius: 26px;
-      padding: clamp(18px, 3vw, 34px);
-      background: linear-gradient(120deg, rgba(19, 26, 44, 0.8), rgba(12, 17, 31, 0.6));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-      display: grid;
-      gap: 10px;
+    .brand-kicker {
+      color: var(--quiet);
+      font-size: 0.78rem;
     }
 
-    .eyebrow {
-      text-transform: uppercase;
-      letter-spacing: 0.28em;
-      font-size: 0.68rem;
-      color: rgba(255, 234, 205, 0.72);
-    }
-
-    h1 {
+    .brand-name {
       margin: 0;
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(2.1rem, 6vw, 4rem);
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      line-height: 0.92;
-      max-width: 15ch;
-      text-wrap: balance;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 2.2rem;
+      line-height: 1;
+      font-weight: 700;
     }
 
-    .masthead p {
-      margin: 0;
+    .top-note {
+      justify-self: center;
+      max-width: 52ch;
       color: var(--muted);
-      max-width: 65ch;
-      line-height: 1.6;
-      font-size: 0.97rem;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      text-align: center;
     }
 
-    .viewer-wrap {
-      border-radius: 30px;
-      border: 1px solid rgba(207, 184, 255, 0.3);
-      background: linear-gradient(135deg, rgba(9, 13, 26, 0.88), rgba(18, 24, 45, 0.82));
-      box-shadow: var(--shadow);
-      padding: clamp(14px, 2.4vw, 24px);
+    .status-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(8, 9, 8, 0.5);
+      backdrop-filter: blur(18px);
+      color: var(--muted);
+      white-space: nowrap;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.24);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--mineral);
+      border-radius: 999px;
+      box-shadow: 0 0 18px rgba(110, 184, 162, 0.86);
+    }
+
+    .reader {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 18px 22px 24px;
       display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: end;
       gap: 16px;
+      padding: 0 2px;
     }
 
-    .orb {
-      position: absolute;
-      width: clamp(120px, 16vw, 220px);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      filter: blur(10px);
-      opacity: 0.3;
-      pointer-events: none;
-      mix-blend-mode: screen;
+    .folio-title {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.6rem;
+      line-height: 1;
+      font-weight: 600;
     }
 
-    .orb.left { left: -50px; top: 24%; background: radial-gradient(circle, rgba(126, 233, 255, 0.65), transparent 70%); }
-    .orb.right { right: -40px; bottom: 10%; background: radial-gradient(circle, rgba(197, 155, 255, 0.75), transparent 70%); }
+    .folio-subtitle {
+      color: var(--quiet);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
 
-    .flipbook-shell {
+    .folio-rule {
+      height: 1px;
+      background: linear-gradient(90deg, var(--line-strong), transparent);
+      align-self: center;
+    }
+
+    .reader-panel {
       position: relative;
-      border-radius: 24px;
+      min-height: calc(100vh - 156px);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 10px;
       padding: 10px;
-      background: linear-gradient(145deg, rgba(242, 232, 219, 0.1), rgba(252, 245, 238, 0.03));
-      border: 1px solid rgba(243, 227, 210, 0.2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
       overflow: hidden;
     }
 
-    .flipbook-viewport {
+    .reader-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 0 rgba(255, 247, 235, 0.18);
+    }
+
+    .viewport {
       position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      max-height: min(70vh, 740px);
-      border-radius: 18px;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 247, 235, 0.14);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(90deg, rgba(167, 95, 71, 0.16), transparent 18%, transparent 82%, rgba(110, 184, 162, 0.14)),
+        linear-gradient(135deg, rgba(31, 47, 41, 0.32), rgba(13, 12, 12, 0.9)),
+        rgba(8, 9, 8, 0.66);
       overflow: hidden;
-      background: linear-gradient(135deg, #281e2f, #161923 60%, #202739);
-      box-shadow: inset 0 0 0 1px rgba(251, 239, 224, 0.16);
     }
 
-    #flipbook { width: 100%; height: 100%; }
+    .viewport::before,
+    .viewport::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .viewport::before {
+      inset: 14px;
+      border: 1px solid rgba(251, 246, 237, 0.11);
+      border-radius: 6px;
+    }
+
+    .viewport::after {
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(transparent, rgba(251, 246, 237, 0.18), transparent);
+      opacity: 0.42;
+    }
+
+    #flipbook {
+      width: 100%;
+      height: 100%;
+      min-height: 560px;
+      position: relative;
+      z-index: 2;
+    }
 
     .page-item {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(160deg, #f2e9dc, #f6efe4);
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.12), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.12)),
+        var(--paper);
     }
 
     .page-item img {
@@ -167,138 +248,269 @@
       -webkit-user-drag: none;
     }
 
-    .controls {
+    .fallback-gallery {
+      display: none;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      scroll-snap-type: x mandatory;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(260px, 82%);
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .fallback-gallery.is-visible { display: grid; }
+
+    .fallback-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      scroll-snap-align: center;
+      background: var(--paper);
+      border-radius: var(--radius);
+    }
+
+    .toolbar {
+      position: relative;
       display: grid;
-      gap: 12px;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
-      border-radius: 20px;
-      background: var(--surface);
-      border: 1px solid var(--glass-border);
+      gap: 10px;
+      min-height: 74px;
       padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(251, 246, 237, 0.055), transparent), var(--panel-strong);
     }
 
-    .controls button {
-      border: 1px solid rgba(210, 189, 255, 0.5);
-      background: linear-gradient(130deg, rgba(126, 233, 255, 0.25), rgba(197, 155, 255, 0.3));
-      color: #fff;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 1.3rem;
+    .nav-group,
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button {
+      display: inline-grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(255, 247, 235, 0.2);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: rgba(251, 246, 237, 0.07);
       cursor: pointer;
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
     }
 
-    .controls button:hover:not(:disabled) {
-      transform: translateY(-1px) scale(1.04);
-      box-shadow: 0 10px 18px rgba(121, 97, 168, 0.4);
+    .icon-button:hover:not(:disabled),
+    .icon-button:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(217, 154, 84, 0.72);
+      background: rgba(217, 154, 84, 0.18);
+      outline: none;
     }
 
-    .controls button:disabled { opacity: 0.36; cursor: not-allowed; }
+    .icon-button:disabled {
+      opacity: 0.34;
+      cursor: not-allowed;
+      transform: none;
+    }
 
-    .meta-center {
-      text-align: center;
+    .page-state {
+      min-width: 0;
       display: grid;
-      gap: 4px;
+      gap: 7px;
+      align-items: center;
     }
 
-    .page-label {
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      font-size: 0.66rem;
-      color: rgba(249, 233, 209, 0.65);
+    .page-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .page-indicator {
+      color: var(--quiet);
+      font-size: 0.88rem;
+      white-space: nowrap;
     }
 
     .page-title {
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.1rem, 2.4vw, 1.55rem);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.45rem;
       font-weight: 600;
-      letter-spacing: 0.04em;
-      line-height: 1;
     }
 
-    .scrub {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 12px;
-      align-items: center;
-      border-radius: 16px;
-      background: rgba(6, 10, 20, 0.45);
-      border: 1px solid rgba(206, 181, 255, 0.28);
-      padding: 10px 12px;
-    }
-
-    .count {
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.68rem;
-      color: rgba(255, 234, 205, 0.65);
-    }
+    .scrubber-row { display: grid; }
 
     input[type="range"] {
       width: 100%;
-      accent-color: var(--accent);
+      height: 28px;
+      margin: 0;
+      accent-color: var(--ember);
+      cursor: pointer;
     }
 
     .progress-track {
-      height: 4px;
+      height: 3px;
+      background: rgba(255, 247, 235, 0.14);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.11);
       overflow: hidden;
-      margin-top: 2px;
     }
 
     .progress-bar {
-      height: 100%;
       width: 0;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent));
-      transition: width 0.3s ease;
+      height: 100%;
+      background: linear-gradient(90deg, var(--mineral), var(--ember), var(--oxide));
+      transition: width 220ms ease;
     }
 
-    @media (max-width: 780px) {
-      .controls { grid-template-columns: auto 1fr auto; }
-      .stage { padding: 14px; }
-      .masthead p { font-size: 0.9rem; }
-      .page-title { font-size: 1.12rem; }
+    .loading-note {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+      background: rgba(8, 9, 8, 0.34);
+    }
+
+    .loading-note.is-hidden { display: none; }
+
+    @media (max-width: 1020px) {
+      .topbar {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .top-note {
+        justify-self: start;
+        text-align: left;
+      }
+
+      .status-strip {
+        width: max-content;
+        max-width: 100%;
+      }
+
+      .reader-panel { min-height: 72vh; }
+    }
+
+    @media (max-width: 680px) {
+      .topbar,
+      .reader {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .brand-name { font-size: 2.2rem; }
+
+      .intro {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .folio-rule { display: none; }
+
+      .reader-panel {
+        min-height: 66vh;
+        padding: 8px;
+      }
+
+      #flipbook { min-height: 390px; }
+
+      .toolbar { grid-template-columns: 1fr; }
+
+      .nav-group,
+      .action-group { justify-content: center; }
+
+      .page-line {
+        display: grid;
+        gap: 2px;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .page-title { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <main class="stage">
-    <header class="masthead">
-      <span class="eyebrow">Collection numérique · Édition immersive</span>
-      <h1>Epistellaire, une chambre d’étoiles à feuilleter.</h1>
-      <p>
-        Cette nouvelle direction artistique propose un écrin nocturne, presque cinématographique, pour magnifier chaque page.
-        Le geste de lecture devient une traversée visuelle : lumineuse, organique et sensible.
+  <main class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="Epistellaire">
+        <span class="brand-kicker">Edition immersive - V1 livrable</span>
+        <h1 class="brand-name">Epistellaire</h1>
+      </div>
+      <p class="top-note">
+        Galerie numerique pour laisser les planches occuper la scene, avec une navigation precise et un cadre volontairement silencieux.
       </p>
+      <div class="status-strip" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="statusText">Chargement de l'atlas...</span>
+      </div>
     </header>
 
-    <section class="viewer-wrap" aria-label="Livre numérique Epistellaire">
-      <div class="flipbook-shell">
-        <span class="orb left" aria-hidden="true"></span>
-        <span class="orb right" aria-hidden="true"></span>
-        <div class="flipbook-viewport">
+    <section class="reader" aria-label="Livre numerique Epistellaire">
+      <aside class="intro">
+        <h2 class="folio-title" id="folioTitle">Couverture</h2>
+        <div class="folio-rule" aria-hidden="true"></div>
+        <div class="folio-subtitle" id="folioSubtitle">Page 1 sur 9</div>
+      </aside>
+
+      <section class="reader-panel" id="readerPanel">
+        <div class="viewport">
           <div id="flipbook"></div>
+          <div class="fallback-gallery" id="fallbackGallery" aria-label="Galerie de secours"></div>
+          <div class="loading-note" id="loadingNote">Preparation des pages...</div>
         </div>
-      </div>
 
-      <div class="controls" role="toolbar" aria-label="Contrôles du livre">
-        <button type="button" data-action="prev" aria-label="Page précédente">‹</button>
-        <div class="meta-center">
-          <div class="page-label" id="pageIndicator">Chargement des pages…</div>
-          <div class="page-title" id="pageTitle">&nbsp;</div>
-          <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="toolbar" role="toolbar" aria-label="Controles du livre">
+          <div class="nav-group">
+            <button class="icon-button" type="button" data-action="first" title="Premiere page" aria-label="Premiere page">
+              <i data-lucide="skip-back"></i>
+            </button>
+            <button class="icon-button" type="button" data-action="prev" title="Page precedente" aria-label="Page precedente">
+              <i data-lucide="chevron-left"></i>
+            </button>
+          </div>
+
+          <div class="page-state">
+            <div class="page-line">
+              <span class="page-title" id="pageTitle">&nbsp;</span>
+              <span class="page-indicator" id="pageIndicator">Page 1 / 1</span>
+            </div>
+            <div class="scrubber-row">
+              <input type="range" min="1" max="1" value="1" step="1" id="pageScrubber" aria-label="Aller a la page" />
+              <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+            </div>
+          </div>
+
+          <div class="action-group">
+            <button class="icon-button" type="button" data-action="next" title="Page suivante" aria-label="Page suivante">
+              <i data-lucide="chevron-right"></i>
+            </button>
+            <button class="icon-button" type="button" data-action="last" title="Derniere page" aria-label="Derniere page">
+              <i data-lucide="skip-forward"></i>
+            </button>
+            <button class="icon-button" type="button" data-action="fullscreen" title="Plein ecran" aria-label="Plein ecran">
+              <i data-lucide="maximize-2"></i>
+            </button>
+            <a class="icon-button" id="downloadLink" href="#" download title="Telecharger la page" aria-label="Telecharger la page">
+              <i data-lucide="download"></i>
+            </a>
+          </div>
         </div>
-        <button type="button" data-action="next" aria-label="Page suivante">›</button>
-      </div>
-
-      <div class="scrub" aria-label="Navigation rapide">
-        <span class="count" id="scrubCount">Page 1</span>
-        <input type="range" min="1" max="1" value="1" step="1" id="pageScrubber" aria-label="Aller à la page" />
-        <span class="count" id="totalCount">/ 1</span>
-      </div>
+      </section>
     </section>
   </main>
 
@@ -318,135 +530,6 @@
   </script>
   <!-- PAGES_DATA_END -->
 
-  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
-  <script>
-    (function () {
-      const pageIndicator = document.getElementById('pageIndicator');
-      const pageTitle = document.getElementById('pageTitle');
-      const pageScrubber = document.getElementById('pageScrubber');
-      const scrubCount = document.getElementById('scrubCount');
-      const totalCount = document.getElementById('totalCount');
-      const progressBar = document.getElementById('progressBar');
-      const navButtons = Array.from(document.querySelectorAll('[data-action]'));
-      const flipbookEl = document.getElementById('flipbook');
-
-      let pages = [];
-      let pageFlip;
-
-      const inlinePages = (() => {
-        const dataEl = document.getElementById('pagesData');
-        if (!dataEl) return [];
-        try {
-          return JSON.parse(dataEl.textContent);
-        } catch {
-          return [];
-        }
-      })();
-
-      const loadPages = async () => {
-        if (location.protocol === 'file:' && inlinePages.length) return inlinePages;
-        try {
-          const response = await fetch('pages.json', { cache: 'no-store' });
-          if (!response.ok) throw new Error(`Réponse inattendue (${response.status})`);
-          return await response.json();
-        } catch {
-          return inlinePages;
-        }
-      };
-
-      const currentIndex = () => pageFlip ? pageFlip.getCurrentPageIndex() : 0;
-
-      const updateIndicators = () => {
-        const index = currentIndex();
-        const current = index + 1;
-        const total = pages.length;
-        const meta = pages[index] || {};
-
-        pageIndicator.textContent = `Page ${current} / ${total}`;
-        pageTitle.textContent = meta.title || 'Sans titre';
-        scrubCount.textContent = `Page ${current}`;
-        totalCount.textContent = `/ ${total}`;
-        pageScrubber.value = String(current);
-        progressBar.style.width = `${(current / total) * 100}%`;
-
-        navButtons.forEach((button) => {
-          if (button.dataset.action === 'prev') button.disabled = index <= 0;
-          if (button.dataset.action === 'next') button.disabled = index >= total - 1;
-        });
-      };
-
-      const createPageNode = (page) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'page-item';
-        const img = document.createElement('img');
-        img.src = page.src;
-        img.alt = page.title || '';
-        wrapper.appendChild(img);
-        return wrapper;
-      };
-
-      const init = async () => {
-        pages = await loadPages();
-        if (!pages.length) {
-          pageIndicator.textContent = 'Pages indisponibles.';
-          return;
-        }
-
-        pageScrubber.max = String(pages.length);
-
-        if (!(window.St && window.St.PageFlip)) {
-          pageIndicator.textContent = '3dflipbook indisponible (CDN).';
-          return;
-        }
-
-        pageFlip = new window.St.PageFlip(flipbookEl, {
-          width: 1280,
-          height: 720,
-          size: 'stretch',
-          minWidth: 320,
-          maxWidth: 1600,
-          minHeight: 180,
-          maxHeight: 900,
-          maxShadowOpacity: 0.4,
-          showCover: true,
-          mobileScrollSupport: true,
-          usePortrait: true,
-          drawShadow: true,
-          flippingTime: 1000
-        });
-
-        pageFlip.loadFromHTML(pages.map(createPageNode));
-        pageFlip.on('flip', updateIndicators);
-
-        navButtons.forEach((button) => {
-          button.addEventListener('click', () => {
-            if (!pageFlip) return;
-            if (button.dataset.action === 'prev') pageFlip.flipPrev('top');
-            else pageFlip.flipNext('top');
-          });
-        });
-
-        pageScrubber.addEventListener('input', (event) => {
-          if (!pageFlip) return;
-          const target = Number(event.target.value) - 1;
-          pageFlip.turnToPage(target);
-          updateIndicators();
-        });
-
-        document.addEventListener('keydown', (event) => {
-          if (!pageFlip) return;
-          if (event.key === 'ArrowLeft') pageFlip.flipPrev('top');
-          if (event.key === 'ArrowRight') pageFlip.flipNext('top');
-        });
-
-        updateIndicators();
-      };
-
-      init().catch((error) => {
-        pageIndicator.textContent = 'Pages indisponibles.';
-        console.error(error);
-      });
-    })();
-  </script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
