@@ -1,67 +1,64 @@
-# Flipbook StPageFlip — Starter GitHub Pages
+# Epistellaire
 
-Un mini-site **100% statique** prêt pour GitHub Pages, pour feuilleter un livre d’illustrations et **ajouter une page chaque jour** via un simple commit.
+Epistellaire est une galerie web pensee pour presenter une oeuvre illustree sous forme de livre numerique. La V1 met l'oeuvre au centre: une interface sombre, precise et volontairement sobre encadre les planches sans ajouter d'image d'arriere-plan.
 
-## 🚀 Déploiement rapide (GitHub Pages)
-1. Créez un nouveau repo sur GitHub (ou utilisez-en un).
-2. Ajoutez ces fichiers à la racine du repo (ou dans `/docs` si vous préférez publier depuis un dossier docs).
-3. Activez **Settings → Pages** : Source = **Deploy from a branch** (branche `main`, dossier `/root` ou `/docs`).
-4. Ouvrez l’URL fournie par GitHub Pages.
+## V1 livrable
 
-## 🗂️ Structure
+- Visionneuse immersive avec effet de page via `page-flip`.
+- Interface responsive pour desktop, tablette et mobile.
+- Navigation premiere page, precedente, suivante, derniere page.
+- Curseur de progression, etat de page, plein ecran et telechargement de la planche courante.
+- Icones vectorielles via `lucide`.
+- Build moderne avec `vite`, pret pour GitHub Pages.
+- Apercu social base sur la couverture de l'oeuvre.
+
+## Developpement
+
+```bash
+npm install
+npm run dev
 ```
+
+Pour produire une version statique:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Structure
+
+```text
 .
-├─ index.html          # La visionneuse (StPageFlip via CDN)
-├─ pages.json          # La liste des pages (à mettre à jour)
-└─ assets/
-   └─ pages/
-      ├─ 001.svg
-      ├─ 002.svg
-      └─ 003.svg      # Exemples — remplacez par vos images (JPG/PNG/SVG)
+|-- index.html
+|-- package.json
+|-- vite.config.js
+|-- pages.json
+|-- src/
+|   `-- main.js
+|-- assets/
+|   `-- pages/
+|       |-- 001.jpg
+|       |-- 002.jpg
+|       `-- ...
+`-- scripts/
+    `-- sync_pages_manifest.py
 ```
 
-## 📦 Préparer l'upload de toute l'œuvre
-Pour publier **tous les dessins d'un coup** (et éviter d'éditer manuellement `pages.json`) :
+## Ajouter ou remplacer des pages
 
-1. Déposez tous vos fichiers dans `assets/pages/` (`.jpg`, `.jpeg`, `.png`, `.webp`, `.svg`, `.avif`).
-2. Lancez la synchronisation :
-   ```bash
-   python3 scripts/sync_pages_manifest.py
-   ```
-3. Vérifiez `pages.json` puis commit/push.
+1. Deposer les images dans `assets/pages/`.
+2. Garder une numerotation stable, par exemple `001.jpg`, `002.jpg`, `010.jpg`.
+3. Synchroniser le manifeste:
 
-Le script :
-- parcourt automatiquement `assets/pages/` ;
-- trie les fichiers dans l'ordre naturel (`001`, `002`, `010`, etc.) ;
-- met à jour `pages.json` ;
-- aligne aussi les données embarquées dans `index.html` (fallback local).
-
-> Conseil : gardez une numérotation cohérente (`001`, `002`, …) pour refléter le parcours narratif.
-
-## ✏️ Mise à jour quotidienne
-- Déposez l’image du jour dans `assets/pages/` (ex. `004.jpg`).
-- Ajoutez une ligne à `pages.json` :
-```json
-{ "src": "assets/pages/004.jpg", "title": "Jour 3" }
+```bash
+npm run sync:pages
 ```
-- Commit & push → c’est en ligne.
-- Astuce : ajoutez `?last=1` à l’URL pour atterrir automatiquement sur la **dernière page** (nouveauté du jour).
 
-## 🧩 Astuces & variantes
-- **Taille & zoom** : ajustez `width/height` dans `index.html` (`new PageFlip(...)`) ou utilisez les boutons `＋`/`－`.
-- **Accessibilité** : chaque page a un `alt` (repris du `title` si présent). Soignez ce champ dans `pages.json`.
-- **SEO** : la `<title>` et la meta `description` sont dans `<head>`.
-- **Tri** : gardez un nommage avec zéros (`001.jpg`, `002.jpg`, …) pour rester dans l’ordre.
-- **Couverture** : laissez `showCover: true` et mettez la couverture en premier (`001.*`).
+Le script met a jour `pages.json` et les donnees integrees dans `index.html`.
 
-## 🛠️ Personnalisation légère
-- Styles : directement dans `index.html` → `<style>…</style>`.
-- Contrôles : ajoutez des boutons (plein écran, téléchargement, etc.).
-- Contenu mixte : vous pouvez aussi mettre du texte HTML dans une page si besoin (remplacez l’`<img>`).
+## Publication GitHub Pages
 
-## ❓Dépannage
-- *Rien ne s’affiche* : ouvrez la console du navigateur (F12) → erreurs de chemin (sensible à la casse) ?
-- *CORS sur images* : hébergez **toutes** les images dans le repo (même domaine que la page).
-- *Cache* : `fetch('pages.json', {cache: 'no-store'})` minimise les surprises, mais un hard refresh peut aider (Ctrl/Cmd+Shift+R).
+Le workflow `.github/workflows/pages.yml` installe les dependances, construit le site avec Vite, puis publie le dossier `dist` sur GitHub Pages.
 
-Bon projet ! 🎨📖
+L'URL peut recevoir `?last=1` pour ouvrir directement la derniere planche.
