@@ -5,28 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Epistellaire - Galerie immersive</title>
   <meta name="description" content="Epistellaire est une galerie immersive ou chaque page devient une constellation a feuilleter." />
-  <meta name="theme-color" content="#0a0a09" />
+  <meta name="theme-color" content="#0b0b0a" />
   <meta property="og:title" content="Epistellaire - Galerie immersive" />
-  <meta property="og:description" content="Une experience de lecture artistique et immersive pour explorer les planches d'Epistellaire." />
+  <meta property="og:description" content="Une experience de lecture artistique pour explorer les planches d'Epistellaire." />
   <meta property="og:image" content="assets/pages/001.jpg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230b0b0a'/%3E%3Cpath d='M14 45c12-8 24-8 36 0V18c-12-6-24-6-36 0v27Z' fill='none' stroke='%23d7aa61' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M32 17v27' stroke='%2386b9a4' stroke-width='3'/%3E%3C/svg%3E" />
   <style>
     :root {
-      --bg: #0a0a09;
-      --ink: #fbf6ed;
-      --muted: rgba(251, 246, 237, 0.68);
-      --quiet: rgba(251, 246, 237, 0.46);
-      --line: rgba(251, 246, 237, 0.16);
-      --line-strong: rgba(251, 246, 237, 0.28);
-      --panel: rgba(14, 14, 13, 0.72);
-      --panel-strong: rgba(14, 14, 13, 0.9);
-      --paper: #f6ead9;
-      --ember: #d99a54;
-      --mineral: #6eb8a2;
-      --oxide: #a75f47;
-      --shadow: 0 24px 90px rgba(0, 0, 0, 0.62);
+      --bg: #0b0b0a;
+      --bg-lift: #12120f;
+      --ink: #fbf5ea;
+      --muted: rgba(251, 245, 234, 0.68);
+      --quiet: rgba(251, 245, 234, 0.44);
+      --line: rgba(251, 245, 234, 0.16);
+      --line-strong: rgba(251, 245, 234, 0.3);
+      --panel: rgba(18, 18, 15, 0.82);
+      --panel-soft: rgba(251, 245, 234, 0.055);
+      --paper: #f7eddf;
+      --gold: #d7aa61;
+      --sage: #86b9a4;
+      --rust: #a85f45;
+      --shadow: 0 28px 90px rgba(0, 0, 0, 0.58);
       --radius: 8px;
       color-scheme: dark;
     }
@@ -41,11 +40,11 @@
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
       background:
-        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-        linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
-        radial-gradient(circle at 50% 18%, rgba(251, 246, 237, 0.08), transparent 34%),
-        linear-gradient(180deg, #11110f, var(--bg) 44%, #070706);
-      background-size: 48px 48px, 48px 48px, auto, auto;
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        radial-gradient(circle at 50% -12%, rgba(215, 170, 97, 0.15), transparent 32rem),
+        linear-gradient(180deg, #171611, var(--bg) 38%, #070706);
+      background-size: 64px 64px, 64px 64px, auto, auto;
       background-attachment: fixed;
       letter-spacing: 0;
       overflow-x: hidden;
@@ -61,16 +60,17 @@
       min-height: 100vh;
       display: grid;
       grid-template-rows: auto 1fr;
+      gap: 14px;
+      padding: 18px;
     }
 
     .topbar {
+      width: min(1600px, 100%);
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: minmax(160px, auto) minmax(0, 1fr) auto;
       align-items: center;
       gap: 18px;
-      padding: 16px 22px 0;
-      width: min(1560px, 100%);
-      margin: 0 auto;
     }
 
     .brand {
@@ -79,100 +79,87 @@
       min-width: 0;
     }
 
-    .brand-kicker {
+    .brand-kicker,
+    .folio-subtitle,
+    .page-indicator,
+    .status-strip {
       color: var(--quiet);
       font-size: 0.78rem;
     }
 
-    .brand-name {
+    .brand-name,
+    .folio-title,
+    .page-title {
       margin: 0;
       font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 600;
+    }
+
+    .brand-name {
       font-size: 2.2rem;
       line-height: 1;
       font-weight: 700;
     }
 
-    .top-note {
+    .folio-meta {
       justify-self: center;
-      max-width: 52ch;
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.5;
+      display: grid;
+      gap: 2px;
       text-align: center;
+      min-width: 0;
+    }
+
+    .folio-title {
+      font-size: 1.35rem;
+      line-height: 1.05;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: min(46vw, 46rem);
     }
 
     .status-strip {
+      min-height: 40px;
       display: flex;
       align-items: center;
       gap: 10px;
-      min-height: 42px;
-      padding: 9px 12px;
+      padding: 8px 11px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(8, 9, 8, 0.5);
-      backdrop-filter: blur(18px);
-      color: var(--muted);
+      background: rgba(11, 11, 10, 0.52);
+      backdrop-filter: blur(16px);
       white-space: nowrap;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.24);
     }
 
     .status-dot {
       width: 8px;
       height: 8px;
-      background: var(--mineral);
       border-radius: 999px;
-      box-shadow: 0 0 18px rgba(110, 184, 162, 0.86);
+      background: var(--sage);
+      box-shadow: 0 0 20px rgba(134, 185, 164, 0.76);
     }
 
     .reader {
-      width: min(1440px, 100%);
+      width: min(1600px, 100%);
       margin: 0 auto;
-      padding: 18px 22px 24px;
       display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .intro {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: end;
-      gap: 16px;
-      padding: 0 2px;
-    }
-
-    .folio-title {
-      margin: 0;
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.6rem;
-      line-height: 1;
-      font-weight: 600;
-    }
-
-    .folio-subtitle {
-      color: var(--quiet);
-      font-size: 0.92rem;
-      line-height: 1.45;
-    }
-
-    .folio-rule {
-      height: 1px;
-      background: linear-gradient(90deg, var(--line-strong), transparent);
-      align-self: center;
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 12px;
+      min-height: calc(100vh - 92px);
     }
 
     .reader-panel {
       position: relative;
-      min-height: calc(100vh - 156px);
+      min-height: 0;
       display: grid;
       grid-template-rows: minmax(0, 1fr) auto;
       gap: 10px;
       padding: 10px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--panel);
-      backdrop-filter: blur(18px);
+      background:
+        linear-gradient(180deg, rgba(251, 245, 234, 0.08), rgba(251, 245, 234, 0.025)),
+        var(--panel);
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -183,7 +170,9 @@
       inset: 0;
       pointer-events: none;
       border-radius: inherit;
-      box-shadow: inset 0 1px 0 rgba(255, 247, 235, 0.18);
+      box-shadow:
+        inset 0 1px 0 rgba(251, 245, 234, 0.18),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5);
     }
 
     .viewport {
@@ -191,44 +180,30 @@
       min-height: 0;
       display: grid;
       place-items: center;
-      border: 1px solid rgba(255, 247, 235, 0.14);
+      border: 1px solid rgba(251, 245, 234, 0.14);
       border-radius: var(--radius);
       background:
-        linear-gradient(90deg, rgba(167, 95, 71, 0.16), transparent 18%, transparent 82%, rgba(110, 184, 162, 0.14)),
-        linear-gradient(135deg, rgba(31, 47, 41, 0.32), rgba(13, 12, 12, 0.9)),
-        rgba(8, 9, 8, 0.66);
+        linear-gradient(90deg, rgba(168, 95, 69, 0.14), transparent 17%, transparent 83%, rgba(134, 185, 164, 0.12)),
+        linear-gradient(135deg, rgba(27, 33, 26, 0.72), rgba(9, 9, 8, 0.94));
       overflow: hidden;
     }
 
-    .viewport::before,
-    .viewport::after {
+    .viewport::before {
       content: "";
       position: absolute;
+      inset: 18px;
       pointer-events: none;
+      border: 1px solid rgba(251, 245, 234, 0.12);
+      border-radius: 6px;
       z-index: 1;
     }
 
-    .viewport::before {
-      inset: 14px;
-      border: 1px solid rgba(251, 246, 237, 0.11);
-      border-radius: 6px;
-    }
-
-    .viewport::after {
-      left: 50%;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: linear-gradient(transparent, rgba(251, 246, 237, 0.18), transparent);
-      opacity: 0.42;
-    }
-
     #flipbook {
-      width: 100%;
-      height: 100%;
-      min-height: 560px;
       position: relative;
       z-index: 2;
+      width: 100%;
+      height: 100%;
+      min-height: 590px;
     }
 
     .page-item {
@@ -236,7 +211,7 @@
       align-items: center;
       justify-content: center;
       background:
-        linear-gradient(90deg, rgba(0, 0, 0, 0.12), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.12)),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.12), transparent 13%, transparent 87%, rgba(0, 0, 0, 0.12)),
         var(--paper);
     }
 
@@ -255,9 +230,10 @@
       overflow: auto;
       scroll-snap-type: x mandatory;
       grid-auto-flow: column;
-      grid-auto-columns: minmax(260px, 82%);
+      grid-auto-columns: minmax(280px, 82%);
       gap: 14px;
       padding: 14px;
+      z-index: 2;
     }
 
     .fallback-gallery.is-visible { display: grid; }
@@ -271,17 +247,31 @@
       border-radius: var(--radius);
     }
 
-    .toolbar {
+    .loading-note {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+      background: rgba(9, 9, 8, 0.42);
+    }
+
+    .loading-note.is-hidden { display: none; }
+
+    .control-deck {
       position: relative;
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
-      gap: 10px;
-      min-height: 74px;
+      gap: 12px;
+      min-height: 76px;
       padding: 10px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(251, 246, 237, 0.055), transparent), var(--panel-strong);
+      background: linear-gradient(180deg, var(--panel-soft), transparent), rgba(10, 10, 9, 0.92);
     }
 
     .nav-group,
@@ -296,10 +286,10 @@
       place-items: center;
       width: 46px;
       height: 46px;
-      border: 1px solid rgba(255, 247, 235, 0.2);
+      border: 1px solid rgba(251, 245, 234, 0.22);
       border-radius: var(--radius);
       color: var(--ink);
-      background: rgba(251, 246, 237, 0.07);
+      background: rgba(251, 245, 234, 0.07);
       cursor: pointer;
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
     }
@@ -307,8 +297,8 @@
     .icon-button:hover:not(:disabled),
     .icon-button:focus-visible {
       transform: translateY(-1px);
-      border-color: rgba(217, 154, 84, 0.72);
-      background: rgba(217, 154, 84, 0.18);
+      border-color: rgba(215, 170, 97, 0.78);
+      background: rgba(215, 170, 97, 0.16);
       outline: none;
     }
 
@@ -321,7 +311,7 @@
     .page-state {
       min-width: 0;
       display: grid;
-      gap: 7px;
+      gap: 8px;
       align-items: center;
     }
 
@@ -333,35 +323,27 @@
       min-width: 0;
     }
 
-    .page-indicator {
-      color: var(--quiet);
-      font-size: 0.88rem;
-      white-space: nowrap;
-    }
-
     .page-title {
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-family: "Cormorant Garamond", Georgia, serif;
       font-size: 1.45rem;
-      font-weight: 600;
     }
 
-    .scrubber-row { display: grid; }
+    .page-indicator { white-space: nowrap; }
 
     input[type="range"] {
       width: 100%;
-      height: 28px;
+      height: 26px;
       margin: 0;
-      accent-color: var(--ember);
+      accent-color: var(--gold);
       cursor: pointer;
     }
 
     .progress-track {
       height: 3px;
-      background: rgba(255, 247, 235, 0.14);
+      background: rgba(251, 245, 234, 0.14);
       border-radius: 999px;
       overflow: hidden;
     }
@@ -369,78 +351,105 @@
     .progress-bar {
       width: 0;
       height: 100%;
-      background: linear-gradient(90deg, var(--mineral), var(--ember), var(--oxide));
+      background: linear-gradient(90deg, var(--sage), var(--gold), var(--rust));
       transition: width 220ms ease;
     }
 
-    .loading-note {
-      position: absolute;
-      inset: 0;
+    .thumbnail-rail {
       display: grid;
-      place-items: center;
-      color: var(--muted);
-      text-align: center;
-      padding: 24px;
-      background: rgba(8, 9, 8, 0.34);
+      grid-auto-flow: column;
+      grid-auto-columns: 72px;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 1px 8px;
+      scrollbar-width: thin;
     }
 
-    .loading-note.is-hidden { display: none; }
+    .thumb-button {
+      position: relative;
+      width: 72px;
+      aspect-ratio: 3 / 4;
+      padding: 0;
+      border: 1px solid rgba(251, 245, 234, 0.18);
+      border-radius: var(--radius);
+      background: #15130f;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0.58;
+      transition: opacity 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
 
-    @media (max-width: 1020px) {
+    .thumb-button:hover,
+    .thumb-button.is-active {
+      opacity: 1;
+      border-color: rgba(215, 170, 97, 0.78);
+      transform: translateY(-1px);
+    }
+
+    .thumb-button img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @media (max-width: 980px) {
+      .app { padding: 14px; }
+
       .topbar {
-        grid-template-columns: 1fr;
-        align-items: start;
+        grid-template-columns: 1fr auto;
       }
 
-      .top-note {
+      .folio-meta {
+        grid-column: 1 / -1;
+        grid-row: 2;
         justify-self: start;
         text-align: left;
       }
 
-      .status-strip {
-        width: max-content;
-        max-width: 100%;
+      .reader {
+        min-height: calc(100vh - 136px);
       }
-
-      .reader-panel { min-height: 72vh; }
     }
 
     @media (max-width: 680px) {
-      .topbar,
-      .reader {
-        padding-left: 12px;
-        padding-right: 12px;
+      .app {
+        padding: 10px;
+        gap: 10px;
       }
 
-      .brand-name { font-size: 2.2rem; }
-
-      .intro {
+      .topbar {
         grid-template-columns: 1fr;
-        align-items: start;
+        gap: 10px;
       }
 
-      .folio-rule { display: none; }
+      .brand-name { font-size: 2rem; }
 
-      .reader-panel {
-        min-height: 66vh;
-        padding: 8px;
+      .status-strip { width: max-content; }
+
+      #flipbook { min-height: 410px; }
+
+      .control-deck {
+        grid-template-columns: 1fr;
       }
-
-      #flipbook { min-height: 390px; }
-
-      .toolbar { grid-template-columns: 1fr; }
 
       .nav-group,
-      .action-group { justify-content: center; }
+      .action-group {
+        justify-content: center;
+      }
 
       .page-line {
         display: grid;
-        gap: 2px;
+        gap: 3px;
         justify-items: center;
         text-align: center;
       }
 
-      .page-title { width: 100%; }
+      .thumbnail-rail {
+        grid-auto-columns: 58px;
+      }
+
+      .thumb-button { width: 58px; }
     }
   </style>
 </head>
@@ -448,12 +457,13 @@
   <main class="app">
     <header class="topbar">
       <div class="brand" aria-label="Epistellaire">
-        <span class="brand-kicker">Edition immersive - V1 livrable</span>
+        <span class="brand-kicker">Edition immersive</span>
         <h1 class="brand-name">Epistellaire</h1>
       </div>
-      <p class="top-note">
-        Galerie numerique pour laisser les planches occuper la scene, avec une navigation precise et un cadre volontairement silencieux.
-      </p>
+      <div class="folio-meta">
+        <h2 class="folio-title" id="folioTitle">Couverture</h2>
+        <div class="folio-subtitle" id="folioSubtitle">Page 1 sur 9</div>
+      </div>
       <div class="status-strip" aria-live="polite">
         <span class="status-dot" aria-hidden="true"></span>
         <span id="statusText">Chargement de l'atlas...</span>
@@ -461,12 +471,6 @@
     </header>
 
     <section class="reader" aria-label="Livre numerique Epistellaire">
-      <aside class="intro">
-        <h2 class="folio-title" id="folioTitle">Couverture</h2>
-        <div class="folio-rule" aria-hidden="true"></div>
-        <div class="folio-subtitle" id="folioSubtitle">Page 1 sur 9</div>
-      </aside>
-
       <section class="reader-panel" id="readerPanel">
         <div class="viewport">
           <div id="flipbook"></div>
@@ -474,7 +478,7 @@
           <div class="loading-note" id="loadingNote">Preparation des pages...</div>
         </div>
 
-        <div class="toolbar" role="toolbar" aria-label="Controles du livre">
+        <div class="control-deck" role="toolbar" aria-label="Controles du livre">
           <div class="nav-group">
             <button class="icon-button" type="button" data-action="first" title="Premiere page" aria-label="Premiere page">
               <i data-lucide="skip-back"></i>
@@ -489,7 +493,7 @@
               <span class="page-title" id="pageTitle">&nbsp;</span>
               <span class="page-indicator" id="pageIndicator">Page 1 / 1</span>
             </div>
-            <div class="scrubber-row">
+            <div>
               <input type="range" min="1" max="1" value="1" step="1" id="pageScrubber" aria-label="Aller a la page" />
               <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
             </div>
@@ -511,6 +515,8 @@
           </div>
         </div>
       </section>
+
+      <nav class="thumbnail-rail" id="thumbnailRail" aria-label="Miniatures des pages"></nav>
     </section>
   </main>
 
