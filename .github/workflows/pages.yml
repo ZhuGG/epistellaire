@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -46,6 +47,29 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Wait for legacy Pages publishing
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Un dépôt encore configuré sur « Deploy from a branch » peut
+            // publier le code source après le bundle. Publier le bundle en
+            // dernier jusqu'au passage de la source Pages à GitHub Actions.
+            const deadline = Date.now() + 240000;
+            while (true) {
+              const { data } = await github.rest.actions.listWorkflowRunsForRepo({
+                ...context.repo, head_sha: context.sha, per_page: 50
+              });
+              const pending = data.workflow_runs.filter(run =>
+                run.id !== context.runId &&
+                run.name === 'pages build and deployment' &&
+                run.status !== 'completed'
+              );
+              if (!pending.length) break;
+              if (Date.now() > deadline) throw new Error('La publication Pages historique ne s’est pas terminée.');
+              core.info('Attente de la fin de la publication Pages historique.');
+              await new Promise(resolve => setTimeout(resolve, 10000));
+            }
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+
