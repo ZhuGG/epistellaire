@@ -1,19 +1,21 @@
 {
   "name": "epistellaire",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "node scripts/prepare-assets.mjs && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "sync:pages": "python scripts/sync_pages_manifest.py"
+    "prepare:assets": "node scripts/prepare-assets.mjs",
+    "check": "node scripts/check.mjs"
   },
   "dependencies": {
-    "lucide": "^0.468.0",
-    "page-flip": "^2.0.7"
+    "three": "^0.186.1",
+    "lucide": "^1.57.0"
   },
   "devDependencies": {
-    "vite": "^7.0.0"
+    "vite": "^8.3.4",
+    "sharp": "^0.35.5"
   }
 }

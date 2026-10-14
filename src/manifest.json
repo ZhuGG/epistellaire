@@ -1,0 +1,83 @@
+[
+  {
+    "id": "001",
+    "title": "Couverture",
+    "width": 2003,
+    "height": 1471,
+    "image": "plates/001.webp",
+    "thumbnail": "thumbs/001.webp",
+    "original": "originals/001.jpg"
+  },
+  {
+    "id": "002",
+    "title": "Planche 01",
+    "width": 2311,
+    "height": 1615,
+    "image": "plates/002.webp",
+    "thumbnail": "thumbs/002.webp",
+    "original": "originals/002.jpg"
+  },
+  {
+    "id": "003",
+    "title": "Planche 02",
+    "width": 2132,
+    "height": 1422,
+    "image": "plates/003.webp",
+    "thumbnail": "thumbs/003.webp",
+    "original": "originals/003.jpg"
+  },
+  {
+    "id": "004",
+    "title": "Planche 03",
+    "width": 2036,
+    "height": 1527,
+    "image": "plates/004.webp",
+    "thumbnail": "thumbs/004.webp",
+    "original": "originals/004.jpg"
+  },
+  {
+    "id": "005",
+    "title": "Planche 04",
+    "width": 1967,
+    "height": 1471,
+    "image": "plates/005.webp",
+    "thumbnail": "thumbs/005.webp",
+    "original": "originals/005.jpg"
+  },
+  {
+    "id": "006",
+    "title": "Planche 05",
+    "width": 1536,
+    "height": 1152,
+    "image": "plates/006.webp",
+    "thumbnail": "thumbs/006.webp",
+    "original": "originals/006.jpg"
+  },
+  {
+    "id": "007",
+    "title": "Planche 06",
+    "width": 4096,
+    "height": 3072,
+    "image": "plates/007.webp",
+    "thumbnail": "thumbs/007.webp",
+    "original": "originals/007.jpg"
+  },
+  {
+    "id": "008",
+    "title": "Planche 07",
+    "width": 4096,
+    "height": 3072,
+    "image": "plates/008.webp",
+    "thumbnail": "thumbs/008.webp",
+    "original": "originals/008.jpg"
+  },
+  {
+    "id": "009",
+    "title": "Planche 08",
+    "width": 4096,
+    "height": 3072,
+    "image": "plates/009.webp",
+    "thumbnail": "thumbs/009.webp",
+    "original": "originals/009.jpg"
+  }
+]

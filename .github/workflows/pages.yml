@@ -27,9 +27,11 @@ jobs:
         with:
           node-version: 22
       - name: Install
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run build
+      - name: Check sources and originals
+        run: npm run check
       - name: Upload artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3

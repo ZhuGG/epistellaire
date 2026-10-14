@@ -3,3 +3,6 @@ dist/
 .npm-cache/
 npm-debug.log*
 .DS_Store
+public/plates/
+public/thumbs/
+public/originals/

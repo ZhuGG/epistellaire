@@ -1,64 +1,46 @@
-# Epistellaire
+# Épistellaire — Hélène Lagnieu
 
-Epistellaire est une galerie web pensee pour presenter une oeuvre illustree sous forme de livre numerique. La V1 met l'oeuvre au centre: une interface sombre, precise et volontairement sobre encadre les planches sans ajouter d'image d'arriere-plan.
+Livre numérique construit avec Three.js, Vite, Lucide et Sharp. Les neuf numérisations de la maquette sont conservées entières et dans leur ordre d’origine.
 
-## V1 livrable
+## Lecture
 
-- Visionneuse immersive avec effet de page via `page-flip`.
-- Interface responsive pour desktop, tablette et mobile.
-- Navigation premiere page, precedente, suivante, derniere page.
-- Curseur de progression, etat de page, plein ecran et telechargement de la planche courante.
-- Icones vectorielles via `lucide`.
-- Build moderne avec `vite`, pret pour GitHub Pages.
-- Apercu social base sur la couverture de l'oeuvre.
+- À l’arrivée : découverte du livre en volume, puis ouverture. « Passer à la lecture » et Échap interrompent l’introduction. La préférence de réduction des mouvements est respectée.
+- Glisser horizontalement : le papier suit le mouvement. Un geste court revient en place ; un geste ample ou rapide tourne la page.
+- Flèches gauche/droite, Début/Fin : navigation. Les boutons restent disponibles sur téléphone.
+- « Regarder de près » ou double-clic : numérisation originale, zoom jusqu’à 500 %, déplacement et pincement à deux doigts. Les touches +, − et 0 contrôlent le zoom.
+- « Les planches » : accès direct aux neuf images. « Livre seul » : lecture agrandie sans en-tête. « Plein écran » : immersion si le navigateur le permet.
+- Sans WebGL : lecture des images avec navigation et détails, sans animation.
 
-## Developpement
+Liens directs : `?page=4` ouvre la quatrième image, `?last=1` la dernière. L’ouverture initiale sans lien direct montre la couverture, puis la première planche.
 
-```bash
-npm install
+## Installation et construction
+
+Node.js 22.12+ ou 24+, npm.
+
+```sh
+npm ci
+npm run prepare:assets
 npm run dev
 ```
 
-Pour produire une version statique:
-
-```bash
+```sh
 npm run build
+npm run check
 npm run preview
 ```
 
-## Structure
+`prepare:assets` génère les WebP de lecture, les miniatures et les copies originales à partir de `pages.json` et `assets/pages/`. Le logo autonome est conservé dans `public/identity/`. Les originaux ne sont ni retouchés, ni recadrés. Le contrôle compare leurs empreintes SHA-256.
 
-```text
-.
-|-- index.html
-|-- package.json
-|-- vite.config.js
-|-- pages.json
-|-- src/
-|   `-- main.js
-|-- assets/
-|   `-- pages/
-|       |-- 001.jpg
-|       |-- 002.jpg
-|       `-- ...
-`-- scripts/
-    `-- sync_pages_manifest.py
-```
+`src/book.js` contient le modèle, la courbure du papier et le ressort amorti. `src/main.js` gère les gestes, la navigation et les détails. Le rendu est effectué à la demande, sans boucle permanente au repos ; la définition du rendu est limitée à deux fois la résolution de l’écran.
 
-## Ajouter ou remplacer des pages
+## GitHub Pages
 
-1. Deposer les images dans `assets/pages/`.
-2. Garder une numerotation stable, par exemple `001.jpg`, `002.jpg`, `010.jpg`.
-3. Synchroniser le manifeste:
+Le workflow `.github/workflows/pages.yml` construit et contrôle le projet, puis publie `dist/`. La source de Pages doit être **GitHub Actions** dans les réglages du dépôt. Les chemins relatifs de Vite permettent un hébergement sous `/epistellaire/`.
 
-```bash
-npm run sync:pages
-```
+## Fidélité documentaire
 
-Le script met a jour `pages.json` et les donnees integrees dans `index.html`.
+Source : [maquette ZhuGG/epistellaire](https://github.com/ZhuGG/epistellaire), consultée le 14 octobre 2026. L’attribution à Hélène Lagnieu est communiquée par l’utilisateur. La couverture porte « Cartes Postales » ; Épistellaire désigne ici la présentation numérique.
 
-## Publication GitHub Pages
+La reliure, l’épaisseur et les versos neutres constituent une scénographie virtuelle, pas une reconstitution mesurée de l’objet. Le titre définitif, la date, la technique et les crédits de numérisation restent à compléter avec l’artiste. La publication de cette version sur GitHub Pages a été demandée par l’utilisateur le 14 octobre 2026 ; elle ne vaut pas validation générale des informations encore manquantes.
 
-Le workflow `.github/workflows/pages.yml` installe les dependances, construit le site avec Vite, puis publie le dossier `dist` sur GitHub Pages.
-
-L'URL peut recevoir `?last=1` pour ouvrir directement la derniere planche.
+Références techniques : [Three.js](https://threejs.org/docs/), [Vite](https://vite.dev/guide/).
